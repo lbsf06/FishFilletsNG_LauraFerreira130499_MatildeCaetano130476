@@ -3,9 +3,15 @@ package pt.iscte.poo.game;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+
+import objects.GameObject;
+import objects.water;
+import objects.Parede;
+import objects.Peixe;
+import objects.PeixeGrande;
+import objects.PeixePequeno;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
-import pt.iscte.poo.objects.*;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
@@ -19,7 +25,7 @@ public class GameEngine {
     }
 
     private ImageGUI gui;
-    private final List<GameObject> objects = new ArrayList<>();
+    private List<GameObject> objects = new ArrayList<>();
     private Peixe peixeSelecionado;
 
     private GameEngine() {
@@ -33,11 +39,7 @@ public class GameEngine {
 
     public void loadLevel(int n) {
         objects.clear();
-        for (int y = 0; y < 10; y++) {
-            for (int x = 0; x < 10; x++) {
-                objects.add(new water(new Point2D(x, y)));
-            }
-        }
+
         File file = new File("room0.txt");
 
         try (Scanner sc = new Scanner(file)) { // ✅ try-with-resources
@@ -77,7 +79,7 @@ public class GameEngine {
             case 'B' -> new PeixeGrande(p);
             case 'S' -> new PeixePequeno(p);
             case 'W' -> new Parede(p);
-            default -> null; // água
+            default -> new water(p); // água
         };
     }
 

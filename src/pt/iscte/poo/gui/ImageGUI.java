@@ -61,6 +61,7 @@ import pt.iscte.poo.utils.Point2D;
  */
 
 // Changed to local Observer-Observed pattern 27-Set-2018
+@SuppressWarnings("deprecation")
 public class ImageGUI extends Observable {
 
     private static final int LABEL_HEIGHT = 20;
@@ -139,6 +140,7 @@ public class ImageGUI extends Observable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.addWindowListener(new WindowAdapter() { // Added 25-oct-2022
+            @SuppressWarnings("deprecation")
             public void windowClosing(WindowEvent e) {
                 windowClosed = true;
                 notifyObservers();
@@ -184,6 +186,7 @@ public class ImageGUI extends Observable {
         notifyAll();
     }
 
+    @SuppressWarnings("deprecation")
     synchronized void waitForKey() throws InterruptedException {
         while (!keyPressed) {
             wait();
@@ -192,6 +195,7 @@ public class ImageGUI extends Observable {
         keyPressed = false;
     }
 
+    @SuppressWarnings("deprecation")
     synchronized void waitForClick() throws InterruptedException {
         while (!mouseClicked) {
             wait();
@@ -200,6 +204,7 @@ public class ImageGUI extends Observable {
         mouseClicked = false;
     }
 
+    @SuppressWarnings("deprecation")
     synchronized void tick() throws InterruptedException {
         ticks = getTicks() + 1;
         notifyObservers();
