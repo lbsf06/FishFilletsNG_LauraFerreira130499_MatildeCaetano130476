@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -60,20 +61,20 @@ import pt.iscte.poo.utils.Point2D;
  * @author lmmn
  */
 
-//Changed to local Observer-Observed pattern 27-Set-2018
-public class ImageGUI extends Observed {
+// Changed to local Observer-Observed pattern 27-Set-2018
+public class ImageGUI extends Observable {
 
     private static final int LABEL_HEIGHT = 20;
 
     private static final long TICK_TIME = 500;
 
-	private static ImageGUI INSTANCE;
+    private static ImageGUI INSTANCE;
 
     private final String IMAGE_DIR = "images";
 
     private int tileWidth = 48;
     private int tileHeight = 48;
-    
+
     private int width = 480;
     private int height = 480;
 
@@ -94,11 +95,11 @@ public class ImageGUI extends Observed {
 
     private int maxLevel;
 
-	private KeyWatcher keywatcher; // added dec 2022
+    private KeyWatcher keywatcher; // added dec 2022
 
-	private Ticker ticker; // added jul 2024
-	
-	private int ticks = 0; // added jul 2024
+    private Ticker ticker; // added jul 2024
+
+    private int ticks = 0; // added jul 2024
 
     private ImageGUI() {
         init();
@@ -131,35 +132,37 @@ public class ImageGUI extends Observed {
 
         panel.setPreferredSize(new Dimension(width, height));
         info.setPreferredSize(new Dimension(width, LABEL_HEIGHT));
-//		panel.setPreferredSize(new Dimension(N_SQUARES_WIDTH * SQUARE_SIZE, N_SQUARES_HEIGHT * SQUARE_SIZE));
-//		info.setPreferredSize(new Dimension(N_SQUARES_WIDTH * SQUARE_SIZE, LABEL_HEIGHT));
+        // panel.setPreferredSize(new Dimension(N_SQUARES_WIDTH * SQUARE_SIZE,
+        // N_SQUARES_HEIGHT * SQUARE_SIZE));
+        // info.setPreferredSize(new Dimension(N_SQUARES_WIDTH * SQUARE_SIZE,
+        // LABEL_HEIGHT));
         info.setBackground(Color.BLACK);
         frame.add(panel);
         frame.add(info, BorderLayout.NORTH);
         frame.pack();
         frame.setResizable(false); // Added 27-Feb-2018
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         frame.addWindowListener(new WindowAdapter() { // Added 25-oct-2022
             public void windowClosing(WindowEvent e) {
-            	windowClosed = true;
-            	notifyObservers();
+                windowClosed = true;
+                notifyObservers();
             }
         });
-        
-        //sets the IconImage on windows, doesn't work on macOS
+
+        // sets the IconImage on windows, doesn't work on macOS
         ImageIcon icon = new ImageIcon("icon/Game_Icon.png");
         frame.setIconImage(icon.getImage());
 
         initImages();
 
-        keywatcher = new KeyWatcher(); 
+        keywatcher = new KeyWatcher();
         keywatcher.start();
 
-//		new MouseWatcher().start();
+        // new MouseWatcher().start();
 
-		ticker = new Ticker();
-		ticker.start();
+        ticker = new Ticker();
+        ticker.start();
 
         frame.addKeyListener(new KeyListener() {
 
@@ -227,7 +230,8 @@ public class ImageGUI extends Observed {
      * Add a new set of images to the main window.
      *
      * @param newImages images to be added to main window
-     * @throws IllegalArgumentException if no image with that name (and a suitable extension) is
+     * @throws IllegalArgumentException if no image with that name (and a suitable
+     *                                  extension) is
      *                                  found the images folder
      */
 
@@ -325,22 +329,23 @@ public class ImageGUI extends Observed {
      * Add a new set of images to the status window.
      *
      * @param newImages images to be added to status bar
-     * @throws IllegalArgumentException if no image with that name (and a suitable extension) is
+     * @throws IllegalArgumentException if no image with that name (and a suitable
+     *                                  extension) is
      *                                  found the images folder
      */
 
     public void setStatusMessage(String message) {
-    	info.setHorizontalAlignment(SwingConstants.LEFT);
-    	info.setVerticalAlignment(SwingConstants.CENTER);
+        info.setHorizontalAlignment(SwingConstants.LEFT);
+        info.setVerticalAlignment(SwingConstants.CENTER);
         info.setText(message);
     }
-   
+
     public void showMessage(String title, String message) {
-		JOptionPane.showMessageDialog(panel, message, title, JOptionPane.DEFAULT_OPTION);
+        JOptionPane.showMessageDialog(panel, message, title, JOptionPane.DEFAULT_OPTION);
     }
-    
+
     public String showInputDialog(String title, String message) {
-    	return JOptionPane.showInputDialog(panel, message, title, JOptionPane.DEFAULT_OPTION);
+        return JOptionPane.showInputDialog(panel, message, title, JOptionPane.DEFAULT_OPTION);
     }
 
     BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws IOException {
@@ -350,7 +355,7 @@ public class ImageGUI extends Observed {
         graphics2D.dispose();
         return resizedImage;
     }
-    
+
     @SuppressWarnings("serial") // Added 2-Mar-2016
     private class DisplayWindow extends JPanel {
         @Override
@@ -361,8 +366,9 @@ public class ImageGUI extends Observed {
                 for (int j = 0; j != maxLevel; j++)
                     for (ImageTile i : images) {
                         if (i.getLayer() == j) {
-                        	Image img = imageDB.get(i.getName()).getImage();
-                        	g.drawImage(img, i.getPosition().getX()*tileWidth, i.getPosition().getY()*tileHeight, frame);
+                            Image img = imageDB.get(i.getName()).getImage();
+                            g.drawImage(img, i.getPosition().getX() * tileWidth, i.getPosition().getY() * tileHeight,
+                                    frame);
                         }
                     }
             }
@@ -372,7 +378,7 @@ public class ImageGUI extends Observed {
     private class KeyWatcher extends Thread {
         private boolean end = false; // added dec 2022
 
-		public void run() {
+        public void run() {
             try {
                 while (!end)
                     waitForKey();
@@ -380,23 +386,23 @@ public class ImageGUI extends Observed {
             }
         }
 
-		public void end() { // added dec 2022
-			end = true;
-		}
+        public void end() { // added dec 2022
+            end = true;
+        }
     }
 
-	private class Ticker extends Thread {
-		
-		public void run() {
-			try {
-				while (true) {
-					sleep(TICK_TIME);
-					tick();
-				}
-			} catch (InterruptedException e) {
-			}
-		}
-	}
+    private class Ticker extends Thread {
+
+        public void run() {
+            try {
+                while (true) {
+                    sleep(TICK_TIME);
+                    tick();
+                }
+            } catch (InterruptedException e) {
+            }
+        }
+    }
 
     /**
      * Force scheduling of a new window paint (this may take a while, it does
@@ -422,7 +428,7 @@ public class ImageGUI extends Observed {
      * @return the width and height of the image grid
      */
     public Dimension getGridDimension() {
-//		return new Dimension(N_SQUARES_WIDTH, N_SQUARES_HEIGHT);
+        // return new Dimension(N_SQUARES_WIDTH, N_SQUARES_HEIGHT);
         return new Dimension(width, height);
     }
 
@@ -430,10 +436,10 @@ public class ImageGUI extends Observed {
         width = i;
         height = j;
         if (INSTANCE != null) {
-            //This is a workaround to allow dynamic resizing
+            // This is a workaround to allow dynamic resizing
             panel.setPreferredSize(new Dimension(width, height + ImageGUI.LABEL_HEIGHT));
             info.setPreferredSize(new Dimension(width, ImageGUI.LABEL_HEIGHT));
-            //frame.setSize(INSTANCE.frame.getPreferredSize());
+            // frame.setSize(INSTANCE.frame.getPreferredSize());
             frame.pack();
             frame.setResizable(false); // Added 27-Feb-2018
         }
@@ -450,17 +456,17 @@ public class ImageGUI extends Observed {
     public synchronized boolean wasWindowClosed() { // Added 25-out-2022
         return windowClosed;
     }
-    
+
     public String askUser(String question) { // Added 25-out-2022
-    	return JOptionPane.showInputDialog(question);
+        return JOptionPane.showInputDialog(question);
     }
 
-	public boolean wasKeyPressed() {
-		return keyPressed;
-	}
+    public boolean wasKeyPressed() {
+        return keyPressed;
+    }
 
-	public int getTicks() {
-		return ticks;
-	}
-    
+    public int getTicks() {
+        return ticks;
+    }
+
 }
