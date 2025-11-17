@@ -1,8 +1,7 @@
-package pt.iscte.poo.game;
+package pt.iscte.poo.objects;
 
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
-import pt.iscte.poo.game.GameObject;
 import pt.iscte.poo.game.GameEngine;
 
 public abstract class Peixe extends GameObject {

@@ -6,6 +6,11 @@ import java.util.*;
 
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
+import pt.iscte.poo.objects.GameObject;
+import pt.iscte.poo.objects.Parede;
+import pt.iscte.poo.objects.Peixe;
+import pt.iscte.poo.objects.PeixeGrande;
+import pt.iscte.poo.objects.PeixePequeno;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 

@@ -1,4 +1,6 @@
-package pt.iscte.poo.game;
+package pt.iscte.poo.objects;
+
+import pt.iscte.poo.utils.Point2D;
 
 public class PeixePequeno extends Peixe {
 
