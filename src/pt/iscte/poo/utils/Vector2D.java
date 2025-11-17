@@ -69,5 +69,4 @@ public class Vector2D implements Serializable {
 		return true;
 	}
 
-	
 }
