@@ -28,7 +28,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.utils.Point2D;
 
 /**
@@ -72,7 +71,7 @@ public class ImageGUI extends Observable {
 
     private final String IMAGE_DIR = "images";
 
-    private int tileWidth = 48;
+    private final int tileWidth = 48;
     private int tileHeight = 48;
 
     private int width = 480;
@@ -82,9 +81,9 @@ public class ImageGUI extends Observable {
     private JPanel panel;
     private JLabel info;
 
-    private Map<String, ImageIcon> imageDB = new HashMap<String, ImageIcon>();
+    private final Map<String, ImageIcon> imageDB = new HashMap<>();
 
-    private List<ImageTile> images = new ArrayList<ImageTile>();
+    private final List<ImageTile> images = new ArrayList<ImageTile>();
 
     // private Point2D lastMouseCoordinate;
     private boolean mouseClicked;
@@ -132,10 +131,6 @@ public class ImageGUI extends Observable {
 
         panel.setPreferredSize(new Dimension(width, height));
         info.setPreferredSize(new Dimension(width, LABEL_HEIGHT));
-        // panel.setPreferredSize(new Dimension(N_SQUARES_WIDTH * SQUARE_SIZE,
-        // N_SQUARES_HEIGHT * SQUARE_SIZE));
-        // info.setPreferredSize(new Dimension(N_SQUARES_WIDTH * SQUARE_SIZE,
-        // LABEL_HEIGHT));
         info.setBackground(Color.BLACK);
         frame.add(panel);
         frame.add(info, BorderLayout.NORTH);
@@ -277,7 +272,6 @@ public class ImageGUI extends Observable {
      * <p>
      * Does nothing if there is no match.
      *
-     * @param image to be removed (must be the exact same Object and not a copy)
      */
 
     public void removeImages(final List<? extends ImageTile> newImages) {
@@ -328,7 +322,6 @@ public class ImageGUI extends Observable {
     /**
      * Add a new set of images to the status window.
      *
-     * @param newImages images to be added to status bar
      * @throws IllegalArgumentException if no image with that name (and a suitable
      *                                  extension) is
      *                                  found the images folder

@@ -3,14 +3,9 @@ package pt.iscte.poo.game;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
-import pt.iscte.poo.objects.GameObject;
-import pt.iscte.poo.objects.Parede;
-import pt.iscte.poo.objects.Peixe;
-import pt.iscte.poo.objects.PeixeGrande;
-import pt.iscte.poo.objects.PeixePequeno;
+import pt.iscte.poo.objects.*;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
@@ -24,7 +19,7 @@ public class GameEngine {
     }
 
     private ImageGUI gui;
-    private List<GameObject> objects = new ArrayList<>();
+    private final List<GameObject> objects = new ArrayList<>();
     private Peixe peixeSelecionado;
 
     private GameEngine() {
@@ -38,9 +33,14 @@ public class GameEngine {
 
     public void loadLevel(int n) {
         objects.clear();
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                objects.add(new water(new Point2D(x, y)));
+            }
+        }
+        File file = new File("room0.txt");
 
-        try {
-            Scanner sc = new Scanner(new File("room0.txt"));
+        try (Scanner sc = new Scanner(file)) { // ✅ try-with-resources
             int y = 0;
 
             while (sc.hasNextLine()) {
@@ -53,7 +53,7 @@ public class GameEngine {
                     if (obj != null) {
                         objects.add(obj);
 
-                        // Guarda o primeiro peixe como selecionado
+                        // Guardar o primeiro peixe
                         if (obj instanceof Peixe && peixeSelecionado == null)
                             peixeSelecionado = (Peixe) obj;
                     }
@@ -82,11 +82,10 @@ public class GameEngine {
     }
 
     public boolean canMoveTo(Point2D next) {
-
         for (GameObject o : objects) {
             if (o.getPosition().equals(next)) {
                 if (o instanceof Parede)
-                    return false; // não passar paredes
+                    return false;
             }
         }
         return true;
@@ -107,5 +106,4 @@ public class GameEngine {
             }
         }
     }
-
 }

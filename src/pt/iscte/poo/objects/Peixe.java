@@ -6,22 +6,26 @@ import pt.iscte.poo.game.GameEngine;
 
 public abstract class Peixe extends GameObject {
 
-    int movimentos = 0;
+    protected String leftImg;   // imagem virado à esquerda
+    protected String rightImg;  // imagem virado à direita
 
-    public Peixe(Point2D p, String img) {
-        super(p, img);
+    public Peixe(Point2D p, String leftImg, String rightImg) {
+        super(p, leftImg);    // começa virado para a esquerda
+        this.leftImg = leftImg;
+        this.rightImg = rightImg;
     }
 
     public void move(Direction d) {
         Point2D next = position.plus(d.asVector());
 
         if (GameEngine.getInstance().canMoveTo(next)) {
-            this.position = next;
-            movimentos++;
-        }
-    }
+            position = next;
 
-    public int getMovimentos() {
-        return movimentos;
+            // muda a imagem consoante a direção
+            if (d == Direction.RIGHT)
+                imageName = rightImg;
+            else if (d == Direction.LEFT)
+                imageName = leftImg;
+        }
     }
 }
