@@ -40,9 +40,14 @@ public class GameEngine {
     public void loadLevel(int n) {
         objects.clear();
 
+        for (int y = 0; y < 10; y++) {
+            for (int x = 0; x < 10; x++) {
+                objects.add(new water(new Point2D(x, y)));
+            }
+        }
         File file = new File("room0.txt");
 
-        try (Scanner sc = new Scanner(file)) { // ✅ try-with-resources
+        try (Scanner sc = new Scanner(file)) {
             int y = 0;
 
             while (sc.hasNextLine()) {
