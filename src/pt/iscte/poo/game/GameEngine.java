@@ -92,7 +92,7 @@ public class GameEngine {
             case 'B' -> new PeixeGrande(p);
             case 'S' -> new PeixePequeno(p);
             case 'W' -> new Parede(p);
-
+            default -> null;
         };
     }
 
