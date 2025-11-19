@@ -28,7 +28,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import pt.iscte.poo.observer.Observed;
 import pt.iscte.poo.utils.Point2D;
 
 /**
@@ -62,6 +61,7 @@ import pt.iscte.poo.utils.Point2D;
  */
 
 // Changed to local Observer-Observed pattern 27-Set-2018
+@SuppressWarnings("deprecation")
 public class ImageGUI extends Observable {
 
     private static final int LABEL_HEIGHT = 20;
@@ -72,7 +72,7 @@ public class ImageGUI extends Observable {
 
     private final String IMAGE_DIR = "images";
 
-    private int tileWidth = 48;
+    private final int tileWidth = 48;
     private int tileHeight = 48;
 
     private int width = 480;
@@ -82,9 +82,9 @@ public class ImageGUI extends Observable {
     private JPanel panel;
     private JLabel info;
 
-    private Map<String, ImageIcon> imageDB = new HashMap<String, ImageIcon>();
+    private final Map<String, ImageIcon> imageDB = new HashMap<>();
 
-    private List<ImageTile> images = new ArrayList<ImageTile>();
+    private final List<ImageTile> images = new ArrayList<ImageTile>();
 
     // private Point2D lastMouseCoordinate;
     private boolean mouseClicked;
@@ -132,10 +132,6 @@ public class ImageGUI extends Observable {
 
         panel.setPreferredSize(new Dimension(width, height));
         info.setPreferredSize(new Dimension(width, LABEL_HEIGHT));
-        // panel.setPreferredSize(new Dimension(N_SQUARES_WIDTH * SQUARE_SIZE,
-        // N_SQUARES_HEIGHT * SQUARE_SIZE));
-        // info.setPreferredSize(new Dimension(N_SQUARES_WIDTH * SQUARE_SIZE,
-        // LABEL_HEIGHT));
         info.setBackground(Color.BLACK);
         frame.add(panel);
         frame.add(info, BorderLayout.NORTH);
@@ -144,6 +140,7 @@ public class ImageGUI extends Observable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.addWindowListener(new WindowAdapter() { // Added 25-oct-2022
+            @SuppressWarnings("deprecation")
             public void windowClosing(WindowEvent e) {
                 windowClosed = true;
                 notifyObservers();
@@ -189,6 +186,7 @@ public class ImageGUI extends Observable {
         notifyAll();
     }
 
+    @SuppressWarnings("deprecation")
     synchronized void waitForKey() throws InterruptedException {
         while (!keyPressed) {
             wait();
@@ -197,6 +195,7 @@ public class ImageGUI extends Observable {
         keyPressed = false;
     }
 
+    @SuppressWarnings("deprecation")
     synchronized void waitForClick() throws InterruptedException {
         while (!mouseClicked) {
             wait();
@@ -205,6 +204,7 @@ public class ImageGUI extends Observable {
         mouseClicked = false;
     }
 
+    @SuppressWarnings("deprecation")
     synchronized void tick() throws InterruptedException {
         ticks = getTicks() + 1;
         notifyObservers();
@@ -277,7 +277,6 @@ public class ImageGUI extends Observable {
      * <p>
      * Does nothing if there is no match.
      *
-     * @param image to be removed (must be the exact same Object and not a copy)
      */
 
     public void removeImages(final List<? extends ImageTile> newImages) {
@@ -328,7 +327,6 @@ public class ImageGUI extends Observable {
     /**
      * Add a new set of images to the status window.
      *
-     * @param newImages images to be added to status bar
      * @throws IllegalArgumentException if no image with that name (and a suitable
      *                                  extension) is
      *                                  found the images folder

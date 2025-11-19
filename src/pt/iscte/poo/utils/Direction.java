@@ -14,7 +14,7 @@ import java.util.Random;
 public enum Direction implements Serializable {
 	LEFT(new Vector2D(-1, 0)), UP(new Vector2D(0, -1)), RIGHT(new Vector2D(1, 0)), DOWN(new Vector2D(0, 1));
 
-	private Vector2D vector;
+	private final Vector2D vector;
 
 	Direction(Vector2D vector) {
 		this.vector = vector;
@@ -25,35 +25,27 @@ public enum Direction implements Serializable {
 	}
 
 	public static Direction directionFor(int keyCode) {
-		switch (keyCode) {
-			case KeyEvent.VK_DOWN:
-				return DOWN;
-			case KeyEvent.VK_UP:
-				return UP;
-			case KeyEvent.VK_LEFT:
-				return LEFT;
-			case KeyEvent.VK_RIGHT:
-				return RIGHT;
-		}
+        return switch (keyCode) {
+            case KeyEvent.VK_DOWN -> DOWN;
+            case KeyEvent.VK_UP -> UP;
+            case KeyEvent.VK_LEFT -> LEFT;
+            case KeyEvent.VK_RIGHT -> RIGHT;
+            default -> throw new IllegalArgumentException();
+        };
 
-		throw new IllegalArgumentException();
-	}
+    }
 
 	public static boolean isDirection(int lastKeyPressed) {
 		return lastKeyPressed >= KeyEvent.VK_LEFT && lastKeyPressed <= KeyEvent.VK_DOWN;
 	}
 
 	public Direction opposite() {
-		switch (this) {
-			case UP:
-				return DOWN;
-			case DOWN:
-				return UP;
-			case LEFT:
-				return RIGHT;
-			default:
-				return LEFT;
-		}
+        return switch (this) {
+            case UP -> DOWN;
+            case DOWN -> UP;
+            case LEFT -> RIGHT;
+            default -> LEFT;
+        };
 	}
 
 	public static Direction random() {
