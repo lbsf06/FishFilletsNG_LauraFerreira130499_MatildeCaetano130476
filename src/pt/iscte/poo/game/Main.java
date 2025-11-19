@@ -1,35 +1,42 @@
 package pt.iscte.poo.game;
+
+import java.awt.event.KeyEvent;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 
-import java.awt.event.KeyEvent;
-
 public class Main {
+
     public static void main(String[] args) {
-        GameEngine engine= GameEngine.getInstance();
+
+        GameEngine engine = GameEngine.getInstance();
         ImageGUI gui = ImageGUI.getInstance();
 
         engine.start();
+
         while (!gui.wasWindowClosed()) {
 
+            // Espera até o GUI sinalizar que houve uma tecla nova
             try {
-                synchronized(gui) {
-                    gui.wait();   // ESPERA até haver um evento real
+                synchronized (gui) {
+                    gui.wait();
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             int key = gui.keyPressed();
+
+            // Mudar peixe (espaço)
             if (key == KeyEvent.VK_SPACE) {
                 engine.switchPeixe();
                 gui.update();
-                continue;  // Sai do ciclo e espera nova tecla
+                continue;
             }
+
+            // Movimento
             if (Direction.isDirection(key)) {
                 engine.keyPressed(Direction.directionFor(key));
             }
         }
     }
 }
-

@@ -9,6 +9,6 @@ public class Parede extends GameObject {
     }
 
     public int getLayer() {
-        return 1; // parede fica acima da água
+        return 1;
     }
 }
