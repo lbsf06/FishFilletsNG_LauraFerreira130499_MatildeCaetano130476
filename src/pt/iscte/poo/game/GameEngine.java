@@ -10,12 +10,14 @@ import objects.Parede;
 import objects.Peixe;
 import objects.PeixeGrande;
 import objects.PeixePequeno;
+
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
 public class GameEngine {
+
     private static GameEngine instance = null;
 
     public static GameEngine getInstance() {
@@ -28,7 +30,7 @@ public class GameEngine {
     private List<GameObject> objects = new ArrayList<>();
     private Peixe peixeSelecionado;
 
-    private GameEngine() {
+    public GameEngine() {
     }
 
     public void start() {
@@ -39,12 +41,14 @@ public class GameEngine {
 
     public void loadLevel(int n) {
         objects.clear();
+        peixeSelecionado = null;
 
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
                 objects.add(new water(new Point2D(x, y)));
             }
         }
+
         File file = new File("room0.txt");
 
         try (Scanner sc = new Scanner(file)) {
@@ -54,15 +58,19 @@ public class GameEngine {
                 String line = sc.nextLine();
 
                 for (int x = 0; x < line.length(); x++) {
+
                     char c = line.charAt(x);
                     GameObject obj = createObject(c, x, y);
 
                     if (obj != null) {
                         objects.add(obj);
 
-                        // Guardar o primeiro peixe
-                        if (obj instanceof Peixe && peixeSelecionado == null)
+                        String name = obj.getName();
+
+                        if (peixeSelecionado == null &&
+                                (name.equals("B") || name.equals("smallFishLeft"))) {
                             peixeSelecionado = (Peixe) obj;
+                        }
                     }
                 }
                 y++;
@@ -84,14 +92,16 @@ public class GameEngine {
             case 'B' -> new PeixeGrande(p);
             case 'S' -> new PeixePequeno(p);
             case 'W' -> new Parede(p);
-            default -> new water(p); // água
+
         };
     }
 
     public boolean canMoveTo(Point2D next) {
+
         for (GameObject o : objects) {
             if (o.getPosition().equals(next)) {
-                if (o instanceof Parede)
+
+                if (o.getName().equals("W"))
                     return false;
             }
         }
@@ -106,8 +116,16 @@ public class GameEngine {
     }
 
     public void switchPeixe() {
+
         for (GameObject o : objects) {
-            if (o instanceof Peixe && o != peixeSelecionado) {
+            String name = o.getName();
+
+            boolean isFish = name.equals("B") ||
+                    name.equals("S") ||
+                    name.equals("bigFishRight") ||
+                    name.equals("smallFishRight");
+
+            if (isFish && o != peixeSelecionado) {
                 peixeSelecionado = (Peixe) o;
                 return;
             }
