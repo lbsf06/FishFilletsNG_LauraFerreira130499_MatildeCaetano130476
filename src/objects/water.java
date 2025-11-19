@@ -9,6 +9,6 @@ public class water extends GameObject {
 
     @Override
     public int getLayer() {
-        return 0; // água fica por baixo de tudo
+        return 0;
     }
 }
