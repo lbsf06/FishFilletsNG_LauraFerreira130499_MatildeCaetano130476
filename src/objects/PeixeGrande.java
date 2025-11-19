@@ -8,4 +8,8 @@ public class PeixeGrande extends Peixe {
         super(p, "B", "bigFishRight");
     }
 
+    public int getLayer() {
+        return 2;
+    }
+
 }
