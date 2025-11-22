@@ -8,6 +8,7 @@ public abstract class Peixe extends GameObject {
 
     protected String leftImg;
     protected String rightImg;
+    protected boolean foraDoMapa = false;
 
     public Peixe(Point2D p, String leftImg, String rightImg) {
         super(p, leftImg);
@@ -16,7 +17,19 @@ public abstract class Peixe extends GameObject {
     }
 
     public void move(Direction d) {
+
+        if (foraDoMapa)
+            return;
+
         Point2D next = position.plus(d.asVector());
+
+        if (next.getX() < 0 || next.getX() >= 10 ||
+                next.getY() < 0 || next.getY() >= 10) {
+
+            foraDoMapa = true;
+            position = next;
+            return;
+        }
 
         if (GameEngine.getInstance().canMoveTo(next)) {
             position = next;
