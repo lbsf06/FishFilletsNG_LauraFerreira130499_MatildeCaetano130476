@@ -7,10 +7,13 @@ import java.util.*;
 import objects.GameObject;
 import objects.water;
 import objects.Parede;
+import objects.ParedeComBuraco;
+import objects.ParedeNormal;
 import objects.Peixe;
 import objects.PeixeGrande;
 import objects.PeixePequeno;
-
+import objects.Tronco;
+import objects.TubodeAço;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
@@ -49,7 +52,7 @@ public class GameEngine {
             }
         }
 
-        File file = new File("room0.txt");
+        File file = new File("rooms/room0.txt");
 
         try (Scanner sc = new Scanner(file)) {
             int y = 0;
@@ -91,7 +94,12 @@ public class GameEngine {
         return switch (c) {
             case 'B' -> new PeixeGrande(p);
             case 'S' -> new PeixePequeno(p);
-            case 'W' -> new Parede(p);
+            case 'W' -> new ParedeNormal(p);
+            case 'Y' -> new Tronco(p);
+            case 'X' -> new ParedeComBuraco(p);
+            case 'V' -> new TubodeAço(p, false);
+            case 'H' -> new TubodeAço(p, true);
+
             default -> null;
         };
     }
@@ -99,12 +107,32 @@ public class GameEngine {
     public boolean canMoveTo(Point2D next) {
 
         for (GameObject o : objects) {
+
             if (o.getPosition().equals(next)) {
 
-                if (o.getName().equals("W"))
+                String name = o.getName();
+
+                if (name.equals("W"))
+                    return false;
+
+                if (name.equals("holedWall")) {
+
+                    String pName = peixeSelecionado.getName();
+
+                    if (pName.contains("smallFish"))
+                        return true;
+
+                    return false;
+                }
+
+                if (name.contains("steel"))
+                    return false;
+
+                if (name.equals("trunk"))
                     return false;
             }
         }
+
         return true;
     }
 

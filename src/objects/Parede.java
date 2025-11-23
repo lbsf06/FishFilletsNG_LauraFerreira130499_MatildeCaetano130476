@@ -2,12 +2,18 @@ package objects;
 
 import pt.iscte.poo.utils.Point2D;
 
-public class Parede extends GameObject {
+public abstract class Parede extends StaticObject {
 
-    public Parede(Point2D p) {
-        super(p, "W");
+    public Parede(Point2D p, String img) {
+        super(p, img);
     }
 
+    @Override
+    public boolean podeAtravessar(String nomeObj) {
+        return false;
+    }
+
+    @Override
     public int getLayer() {
         return 1;
     }
