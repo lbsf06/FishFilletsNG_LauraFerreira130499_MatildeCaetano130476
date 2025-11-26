@@ -1,8 +1,8 @@
 package pt.iscte.poo.objects;
 
-public class bomb extends StaticObject {
+public class Bomb extends StaticObject {
 
-    public bomb(pt.iscte.poo.utils.Point2D p) {
+    public Bomb(pt.iscte.poo.utils.Point2D p) {
         super(p, "bomb");
     }
 

@@ -16,9 +16,9 @@ import pt.iscte.poo.objects.SmallFish;
 import pt.iscte.poo.objects.Tronco;
 import pt.iscte.poo.objects.StaticObject;
 import pt.iscte.poo.objects.TuboDeAco;
-import pt.iscte.poo.objects.anchor;
-import pt.iscte.poo.objects.bomb;
-import pt.iscte.poo.objects.cup;
+import pt.iscte.poo.objects.Anchor;
+import pt.iscte.poo.objects.Bomb;
+import pt.iscte.poo.objects.Cup;
 import pt.iscte.poo.objects.stone;
 import pt.iscte.poo.objects.Trap;
 import pt.iscte.poo.gui.ImageGUI;
@@ -118,10 +118,10 @@ public class Room {
 				case 'Y' -> obj = new Tronco(p);
 				case 'H' -> obj = new TuboDeAco(p, true);
 				case 'V' -> obj = new TuboDeAco(p, false);
-				case 'C' -> obj = new cup(p);
+				case 'C' -> obj = new Cup(p);
 				case 'R' -> obj = new stone(p);
-				case 'A' -> obj = new anchor(p);
-				case 'b' -> obj = new bomb(p);
+				case 'A' -> obj = new Anchor(p);
+				case 'b' -> obj = new Bomb(p);
 				case 'T' -> obj = new Trap(p);
 				case 'B' -> {
 					BigFish bf = new BigFish(p);
