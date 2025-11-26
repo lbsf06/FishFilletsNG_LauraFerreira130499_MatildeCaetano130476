@@ -4,7 +4,8 @@ import pt.iscte.poo.utils.Point2D;
 
 public class Water extends GameObject {
     public Water(Point2D p) {
-        super(p, "water");
+        super(p);
+        this.imageName = "water";
     }
 
     @Override
