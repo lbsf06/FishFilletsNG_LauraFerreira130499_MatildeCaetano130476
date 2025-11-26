@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 
 import objects.GameObject;
-import objects.water;
+import objects.Water;
 import objects.Parede;
 import objects.ParedeComBuraco;
 import objects.ParedeNormal;
@@ -14,6 +14,11 @@ import objects.PeixeGrande;
 import objects.PeixePequeno;
 import objects.Tronco;
 import objects.TubodeAço;
+import objects.cup;
+import objects.stone;
+import objects.bomb;
+import objects.trap;
+import objects.anchor;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
@@ -48,7 +53,7 @@ public class GameEngine {
 
         for (int y = 0; y < 10; y++) {
             for (int x = 0; x < 10; x++) {
-                objects.add(new water(new Point2D(x, y)));
+                objects.add(new Water(new Point2D(x, y)));
             }
         }
 
@@ -88,6 +93,12 @@ public class GameEngine {
         gui.update();
     }
 
+    public void updateGUI() {
+        gui.clearImages();
+        gui.addImages(new ArrayList<ImageTile>(objects));
+        gui.update();
+    }
+
     private GameObject createObject(char c, int x, int y) {
         Point2D p = new Point2D(x, y);
 
@@ -99,6 +110,11 @@ public class GameEngine {
             case 'X' -> new ParedeComBuraco(p);
             case 'V' -> new TubodeAço(p, false);
             case 'H' -> new TubodeAço(p, true);
+            case 'C' -> new cup(p);
+            case 'R' -> new stone(p);
+            case 'A' -> new anchor(p);
+            case 'b' -> new bomb(p);
+            case 'T' -> new trap(p);
 
             default -> null;
         };

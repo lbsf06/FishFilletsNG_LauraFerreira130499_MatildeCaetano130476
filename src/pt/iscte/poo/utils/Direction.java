@@ -11,7 +11,8 @@ import java.util.Random;
  *          Cardinal directions
  *
  */
-public enum Direction implements Serializable {
+public enum Direction implements Serializable{
+
 	LEFT(new Vector2D(-1, 0)), UP(new Vector2D(0, -1)), RIGHT(new Vector2D(1, 0)), DOWN(new Vector2D(0, 1));
 
 	private final Vector2D vector;

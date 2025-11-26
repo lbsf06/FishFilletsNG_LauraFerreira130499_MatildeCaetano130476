@@ -13,6 +13,10 @@ public abstract class GameObject implements ImageTile {
         this.imageName = img;
     }
 
+    public void setPosition(int x, int y) {
+        this.position = new Point2D(x, y);
+    }
+    
     @Override
     public String getName() {
         return imageName;
