@@ -7,10 +7,8 @@ public class ParedeComBuraco extends Parede {
     }
 
     @Override
-    public boolean podeAtravessar(String nomeObj) {
-        return nomeObj.equals("smallFishLeft") ||
-                nomeObj.equals("smallFishRight") ||
-                nomeObj.equals("S");
+    public boolean podeAtravessar(GameCharacter character) {
+        return character instanceof SmallFish;
     }
 
 }

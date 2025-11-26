@@ -2,14 +2,10 @@ package objects;
 
 import pt.iscte.poo.utils.Point2D;
 
-public class Water extends GameObject {
-
-    public Water(Point2D p) {
+public class water extends GameObject {
+    public water(Point2D p) {
         super(p);
-<<<<<<< Updated upstream
         this.imageName = "water";
-=======
->>>>>>> Stashed changes
     }
 
     @Override

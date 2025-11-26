@@ -13,4 +13,9 @@ public class trap extends StaticObject {
     public int getLayer() {
         return 2;
     }
+
+    @Override
+    public boolean podeAtravessar(GameCharacter character) {
+        return character instanceof SmallFish;
+    }
 }

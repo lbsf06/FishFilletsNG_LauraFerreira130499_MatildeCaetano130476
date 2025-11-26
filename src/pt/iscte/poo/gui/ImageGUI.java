@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -141,6 +142,7 @@ public class ImageGUI extends Observable {
             @SuppressWarnings("deprecation")
             public void windowClosing(WindowEvent e) {
                 windowClosed = true;
+                setChanged();
                 notifyObservers();
             }
         });
@@ -189,6 +191,7 @@ public class ImageGUI extends Observable {
         while (!keyPressed) {
             wait();
         }
+        setChanged();
         notifyObservers();
         keyPressed = false;
     }
@@ -198,6 +201,7 @@ public class ImageGUI extends Observable {
         while (!mouseClicked) {
             wait();
         }
+        setChanged();
         notifyObservers();
         mouseClicked = false;
     }
@@ -205,6 +209,7 @@ public class ImageGUI extends Observable {
     @SuppressWarnings("deprecation")
     synchronized void tick() throws InterruptedException {
         ticks = getTicks() + 1;
+        setChanged();
         notifyObservers();
     }
 
@@ -463,6 +468,10 @@ public class ImageGUI extends Observable {
 
     public int getTicks() {
         return ticks;
+    }
+
+    public void registerObserver(Observer o) {
+        this.addObserver(o);
     }
 
 }
