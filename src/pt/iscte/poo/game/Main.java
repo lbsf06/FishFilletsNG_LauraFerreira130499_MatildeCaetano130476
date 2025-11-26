@@ -12,5 +12,5 @@ public class Main {
 		engine.startGame();
 		gui.setStatusMessage("Good luck!");
 	}
-	
+
 }
