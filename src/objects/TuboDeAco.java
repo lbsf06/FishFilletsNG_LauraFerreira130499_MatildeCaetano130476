@@ -2,11 +2,11 @@ package objects;
 
 import pt.iscte.poo.utils.Point2D;
 
-public class TubodeAço extends StaticObject {
+public class TuboDeAco extends StaticObject {
 
-    private boolean horizontal;
+    private final boolean horizontal;
 
-    public TubodeAço(Point2D p, boolean horizontal) {
+    public TuboDeAco(Point2D p, boolean horizontal) {
         super(p, horizontal ? "steelHorizontal" : "steelVertical");
         this.horizontal = horizontal;
     }

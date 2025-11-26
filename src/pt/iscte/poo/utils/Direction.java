@@ -27,18 +27,28 @@ public enum Direction implements Serializable{
 
 	public static Direction directionFor(int keyCode) {
         return switch (keyCode) {
-            case KeyEvent.VK_DOWN -> DOWN;
-            case KeyEvent.VK_UP -> UP;
-            case KeyEvent.VK_LEFT -> LEFT;
-            case KeyEvent.VK_RIGHT -> RIGHT;
+            case KeyEvent.VK_DOWN, KeyEvent.VK_S -> DOWN;
+            case KeyEvent.VK_UP, KeyEvent.VK_W -> UP;
+            case KeyEvent.VK_LEFT, KeyEvent.VK_A -> LEFT;
+            case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> RIGHT;
             default -> throw new IllegalArgumentException();
         };
 
     }
 
-	public static boolean isDirection(int lastKeyPressed) {
-		return lastKeyPressed >= KeyEvent.VK_LEFT && lastKeyPressed <= KeyEvent.VK_DOWN;
-	}
+    public static boolean isDirection(int keyCode) {
+        return isArrowKey(keyCode) || isWasdKey(keyCode);
+    }
+
+    public static boolean isArrowKey(int keyCode) {
+        return keyCode == KeyEvent.VK_LEFT || keyCode == KeyEvent.VK_RIGHT ||
+                keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN;
+    }
+
+    public static boolean isWasdKey(int keyCode) {
+        return keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_A ||
+                keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_D;
+    }
 
 	public Direction opposite() {
         return switch (this) {

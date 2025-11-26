@@ -9,7 +9,7 @@ public abstract class Parede extends StaticObject {
     }
 
     @Override
-    public boolean podeAtravessar(String nomeObj) {
+    public boolean podeAtravessar(GameCharacter character) {
         return false;
     }
 

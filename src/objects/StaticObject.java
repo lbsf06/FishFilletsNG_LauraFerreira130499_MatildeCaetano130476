@@ -5,14 +5,15 @@ import pt.iscte.poo.utils.Point2D;
 public abstract class StaticObject extends GameObject {
 
     public StaticObject(Point2D p, String img) {
-        super(p, img);
+        super(p);
+        this.imageName = img; // ensure GUI knows which sprite to render
     }
 
     public boolean aguentaPeso() {
         return true;
     }
 
-    public boolean podeAtravessar(String nomeDoPeixe) {
+    public boolean podeAtravessar(GameCharacter character) {
         return false;
     }
 

@@ -3,9 +3,9 @@ package objects;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 
-public class PeixeGrande extends GameCharacter {
+public class BigFish extends GameCharacter {
 
-    public PeixeGrande(Point2D p) {
+    public BigFish(Point2D p) {
         super(p);
         this.imageName = "bigFishLeft";
     }

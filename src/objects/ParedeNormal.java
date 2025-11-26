@@ -6,9 +6,4 @@ public class ParedeNormal extends Parede {
         super(p, "W");
     }
 
-    @Override
-    public boolean podeAtravessar(String nomeObj) {
-        return false;
-    }
-
 }

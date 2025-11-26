@@ -1,187 +1,115 @@
 package pt.iscte.poo.game;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.Observable;
+import java.util.Observer;
 
-import objects.GameObject;
-import objects.Water;
-import objects.Parede;
-import objects.ParedeComBuraco;
-import objects.ParedeNormal;
-import objects.Peixe;
-import objects.PeixeGrande;
-import objects.PeixePequeno;
-import objects.Tronco;
-import objects.TubodeAço;
-import objects.cup;
-import objects.stone;
-import objects.bomb;
-import objects.trap;
-import objects.anchor;
 import pt.iscte.poo.gui.ImageGUI;
-import pt.iscte.poo.gui.ImageTile;
 import pt.iscte.poo.utils.Direction;
-import pt.iscte.poo.utils.Point2D;
 
-public class GameEngine {
+import java.awt.event.KeyEvent;
 
-    private static GameEngine instance = null;
-
-    public static GameEngine getInstance() {
-        if (instance == null)
-            instance = new GameEngine();
-        return instance;
-    }
-
+public class GameEngine implements Observer {
 
     private Room room;
     private ImageGUI gui;
 
+    // nível atual (room0, room1, etc.)
+    private int currentLevel = 0;
+
+    // qual peixe está selecionado: true = small, false = big
+    private boolean smallSelected = true;
+
+    // contadores de movimentos
+    private int movesSmall = 0;
+    private int movesBig = 0;
+
     public GameEngine() {
-    }
-
-    public void start() {
         gui = ImageGUI.getInstance();
-        //loadLevel(0);File f = new File("rooms/room0.txt");
+    }
+
+    public void startGame() {
+        loadLevel(0);
+        updateStatusMessage();
+    }
+
+    private void loadLevel(int level) {
+        this.currentLevel = level;
+        gui.clearImages(); // limpa imagens antigas
+        File f = new File("rooms/room" + level + ".txt");
         room = Room.readRoom(f);
-
-        gui.go();
-    }
-
-    public void keyPressed(Direction d) {
-        if (room.getSmallFish() != null)
-            room.getSmallFish().move(d);
-
+        movesSmall = 0;
+        movesBig = 0;
+        smallSelected = true; // por default começa no small
+        updateStatusMessage();
         gui.update();
     }
 
-   /* public void loadLevel(int n) {
-        objects.clear();
-        peixeSelecionado = null;
+    private void restartLevel() {
+        loadLevel(currentLevel);
+    }
 
-        for (int y = 0; y < 10; y++) {
-            for (int x = 0; x < 10; x++) {
-                objects.add(new Water(new Point2D(x, y)));
-            }
+    private void updateStatusMessage() {
+        String selected = smallSelected ? "SmallFish" : "BigFish";
+        String msg = "Level: " + currentLevel +
+                " | Selected: " + selected +
+                " | Moves Small: " + movesSmall +
+                " | Moves Big: " + movesBig;
+        gui.setStatusMessage(msg);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        // distinguir entre TICK e TECLA
+        if (gui.wasKeyPressed()) {
+            handleKey();
+        } else {
+            handleTick();
+        }
+        gui.update();
+    }
+
+    private void handleKey() {
+        int key = gui.keyPressed();
+
+        // Trocar peixe com espaço
+        if (key == KeyEvent.VK_SPACE) {
+            smallSelected = !smallSelected;
+            updateStatusMessage();
+            return;
         }
 
-        File file = new File("rooms/room0.txt"); {
+        // Reiniciar nível com R
+        if (key == KeyEvent.VK_R) {
+            restartLevel();
+            return;
+        }
 
-        try (Scanner sc = new Scanner(file)) {
-            int y = 0;
+        // Movimento
+        boolean moved = false;
 
-            while (sc.hasNextLine()) {
-                String line = sc.nextLine();
+        if (Direction.isArrowKey(key)) {
+            Direction d = Direction.directionFor(key);
 
-                for (int x = 0; x < line.length(); x++) {
-
-                    char c = line.charAt(x);
-                    GameObject obj = createObject(c, x, y);
-
-                    if (obj != null) {
-                        objects.add(obj);
-
-                        String name = obj.getName();
-
-                        if (peixeSelecionado == null &&
-                                (name.equals("B") || name.equals("smallFishLeft"))) {
-                            peixeSelecionado = (Peixe) obj;
-                        }
-                    }
+            if (smallSelected && room.getSmallFish() != null) {
+                if (room.tryMove(room.getSmallFish(), d)) {
+                    movesSmall++;
+                    moved = true;
                 }
-                y++;
-            }
-
-        } catch (FileNotFoundException e) {
-            System.out.println("ERRO: room0.txt não encontrado!");
-        }
-
-        gui.clearImages();
-        gui.addImages(new ArrayList<ImageTile>(objects));
-        gui.update();
-    }
-
-    public void updateGUI() {
-        gui.clearImages();
-        gui.addImages(new ArrayList<ImageTile>(objects));
-        gui.update();
-    }
-
-    private GameObject createObject(char c, int x, int y) {
-        Point2D p = new Point2D(x, y);
-
-        return switch (c) {
-            case 'B' -> new PeixeGrande(p);
-            case 'S' -> new PeixePequeno(p);
-            case 'W' -> new ParedeNormal(p);
-            case 'Y' -> new Tronco(p);
-            case 'X' -> new ParedeComBuraco(p);
-            case 'V' -> new TubodeAço(p, false);
-            case 'H' -> new TubodeAço(p, true);
-            case 'C' -> new cup(p);
-            case 'R' -> new stone(p);
-            case 'A' -> new anchor(p);
-            case 'b' -> new bomb(p);
-            case 'T' -> new trap(p);
-
-            default -> null;
-        };
-    }
-
-    public boolean canMoveTo(Point2D next) {
-
-        for (GameObject o : objects) {
-
-            if (o.getPosition().equals(next)) {
-
-                String name = o.getName();
-
-                if (name.equals("W"))
-                    return false;
-
-                if (name.equals("holedWall")) {
-
-                    String pName = peixeSelecionado.getName();
-
-                    if (pName.contains("smallFish"))
-                        return true;
-
-                    return false;
+            } else if (!smallSelected && room.getBigFish() != null) {
+                if (room.tryMove(room.getBigFish(), d)) {
+                    movesBig++;
+                    moved = true;
                 }
-
-                if (name.contains("steel"))
-                    return false;
-
-                if (name.equals("trunk"))
-                    return false;
             }
         }
 
-        return true;
+        if (moved)
+            updateStatusMessage();
     }
 
-    public void keyPressed(Direction d) {
-        if (peixeSelecionado != null) {
-            peixeSelecionado.move(d);
-            gui.update();
-        }
+    private void handleTick() {
+        // Aqui no futuro entra a GRAVIDADE e outros comportamentos automáticos.
+        // Por agora não faz nada (para o jogo básico andar com os peixes).
     }
-
-    public void switchPeixe() {
-
-        for (GameObject o : objects) {
-            String name = o.getName();
-
-            boolean isFish = name.equals("B") ||
-                    name.equals("S") ||
-                    name.equals("bigFishRight") ||
-                    name.equals("smallFishRight");
-
-            if (isFish && o != peixeSelecionado) {
-                peixeSelecionado = (Peixe) o;
-                return;
-            }
-        }
-    } */
 }
