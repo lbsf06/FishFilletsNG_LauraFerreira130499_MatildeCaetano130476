@@ -8,13 +8,12 @@ public abstract class GameObject implements ImageTile {
     protected Point2D position;
     protected String imageName;
 
-    public GameObject(Point2D p, String img) {
+    public GameObject(Point2D p) {
         this.position = p;
-        this.imageName = img;
     }
 
-    public void setPosition(int x, int y) {
-        this.position = new Point2D(x, y);
+    public void setPosition(Point2D p) {
+        this.position = p;
     }
     
     @Override

@@ -34,20 +34,29 @@ public class GameEngine {
         return instance;
     }
 
+
+    private Room room;
     private ImageGUI gui;
-    private List<GameObject> objects = new ArrayList<>();
-    private Peixe peixeSelecionado;
 
     public GameEngine() {
     }
 
     public void start() {
         gui = ImageGUI.getInstance();
-        loadLevel(0);
+        //loadLevel(0);File f = new File("rooms/room0.txt");
+        room = Room.readRoom(f);
+
         gui.go();
     }
 
-    public void loadLevel(int n) {
+    public void keyPressed(Direction d) {
+        if (room.getSmallFish() != null)
+            room.getSmallFish().move(d);
+
+        gui.update();
+    }
+
+   /* public void loadLevel(int n) {
         objects.clear();
         peixeSelecionado = null;
 
@@ -57,7 +66,7 @@ public class GameEngine {
             }
         }
 
-        File file = new File("rooms/room0.txt");
+        File file = new File("rooms/room0.txt"); {
 
         try (Scanner sc = new Scanner(file)) {
             int y = 0;
@@ -174,5 +183,5 @@ public class GameEngine {
                 return;
             }
         }
-    }
+    } */
 }
