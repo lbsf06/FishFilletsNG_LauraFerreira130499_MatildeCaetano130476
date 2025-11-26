@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import pt.iscte.poo.objects.water;
+import pt.iscte.poo.objects.Water;
 import pt.iscte.poo.objects.BigFish;
 import pt.iscte.poo.objects.GameCharacter;
 import pt.iscte.poo.objects.GameObject;
@@ -19,7 +19,7 @@ import pt.iscte.poo.objects.TuboDeAco;
 import pt.iscte.poo.objects.Anchor;
 import pt.iscte.poo.objects.Bomb;
 import pt.iscte.poo.objects.Cup;
-import pt.iscte.poo.objects.stone;
+import pt.iscte.poo.objects.Stone;
 import pt.iscte.poo.objects.Trap;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Point2D;
@@ -97,7 +97,7 @@ public class Room {
 
 		for (int y = 0; y < altura; y++) {
 			for (int x = 0; x < largura; x++) {
-				GameObject agua = new water(new Point2D(x, y));
+				GameObject agua = new Water(new Point2D(x, y));
 				r.addObject(agua);
 			}
 		}
@@ -119,7 +119,7 @@ public class Room {
 				case 'H' -> obj = new TuboDeAco(p, true);
 				case 'V' -> obj = new TuboDeAco(p, false);
 				case 'C' -> obj = new Cup(p);
-				case 'R' -> obj = new stone(p);
+				case 'R' -> obj = new Stone(p);
 				case 'A' -> obj = new Anchor(p);
 				case 'b' -> obj = new Bomb(p);
 				case 'T' -> obj = new Trap(p);
@@ -169,7 +169,7 @@ public class Room {
 			return true;
 
 		for (GameObject obj : objectsAt(target)) {
-			if (obj == character || obj instanceof water)
+			if (obj == character || obj instanceof Water)
 				continue;
 
 			if (obj instanceof GameCharacter)

@@ -1,8 +1,8 @@
 package pt.iscte.poo.objects;
 
-public class anchor extends StaticObject {
+public class Anchor extends StaticObject {
 
-    public anchor(pt.iscte.poo.utils.Point2D p) {
+    public Anchor(pt.iscte.poo.utils.Point2D p) {
         super(p, "anchor");
     }
 
