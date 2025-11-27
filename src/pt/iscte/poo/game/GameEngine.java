@@ -5,6 +5,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import pt.iscte.poo.gui.ImageGUI;
+import pt.iscte.poo.objects.Cup;
+import pt.iscte.poo.objects.GameObject;
 import pt.iscte.poo.utils.Direction;
 
 import java.awt.event.KeyEvent;
@@ -43,6 +45,7 @@ public class GameEngine implements Observer {
         smallSelected = true; // por default começa no small
         updateStatusMessage();
         gui.update();
+       
     }
 
     private void restartLevel() {
@@ -106,7 +109,13 @@ public class GameEngine implements Observer {
 
         if (moved)
             updateStatusMessage();
+
+         if (room.checkLevelExit(room.getSmallFish()) && room.checkLevelExit(room.getBigFish())) {
+            loadLevel(currentLevel + 1);
+        }
+
     }
+
 
     private void handleTick() {
         // Aqui no futuro entra a GRAVIDADE e outros comportamentos automáticos.

@@ -151,12 +151,30 @@ public class Room {
 		Point2D current = character.getPosition();
 		Point2D target = current.plus(dir.asVector());
 
-		if (!canEnter(character, current, target))
-			return false;
+		if (canEnter(character, current, target)) {
+        character.move(dir);
+        return true;
+    }
 
-		character.move(dir);
-		return true;
-	}
+    // Se for SmallFish, tenta empurrar um objeto leve
+
+     if (character instanceof SmallFish) {
+        List<GameObject> objects = objectsAt(target);
+        if (objects.size() == 1 && (objects.get(0) instanceof Cup || objects.get(0) instanceof Bomb)) {
+            GameObject objLeve = objects.get(0);
+            Point2D alvoEmpurrar = target.plus(dir.asVector());
+            // Só empurra se o espaço seguinte estiver livre e dentro dos limites
+            if (isInside(alvoEmpurrar) && objectsAt(alvoEmpurrar).isEmpty()) {
+                objLeve.setPosition(alvoEmpurrar);
+                character.move(dir);
+                return true;
+            }
+        }
+    }
+
+    return false; 
+}
+
 
 	private boolean canEnter(GameCharacter character, Point2D current, Point2D target) {
 		boolean currentInside = isInside(current);
@@ -199,5 +217,35 @@ public class Room {
 		return p.getX() >= 0 && p.getX() < width && p.getY() >= 0 && p.getY() < height;
 	}
 
+	public boolean checkLevelExit(GameObject fish) {
+    Point2D pos = fish.getPosition();
+    // Só é saída se está fora dos limites
+    return !isInside(pos);
 }
+
+}
+
+
+/*public boolean checkLevelExit(GameObject fish) {
+    for (GameObject obj : objectsAt(fish.getPosition())) {
+        if (obj instanceof Cup) {
+            return true;
+        }
+    }
+    return false;
+}
+
+public static Room changeRoom(String nextRoomFile) {
+    return readRoom(new File(nextRoomFile));
+}
+
+int roomIndex = 0;
+Room roomAtual = Room.readRoom(new File("room" + roomIndex + ".txt")); {
+
+// No ciclo do jogo, após cada movimento:
+if (roomAtual.checkLevelExit(roomAtual.getSmallFish()) && roomAtual.checkLevelExit(roomAtual.getBigFish())) {
+    roomIndex++;
+    roomAtual = Room.changeRoom("room" + roomIndex + ".txt");
+}
+}*/
 
