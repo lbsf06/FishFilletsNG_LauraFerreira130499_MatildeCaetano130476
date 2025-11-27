@@ -11,4 +11,11 @@ public class ParedeComBuraco extends Parede {
         return character instanceof SmallFish;
     }
 
+    @Override
+    public boolean permitePassagem(GameObject mover) {
+        if (mover instanceof Cup)
+            return true;
+        return super.permitePassagem(mover);
+    }
+
 }

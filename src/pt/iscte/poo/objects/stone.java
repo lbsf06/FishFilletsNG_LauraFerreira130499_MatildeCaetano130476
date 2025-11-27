@@ -10,6 +10,11 @@ public class Stone extends StaticObject {
         return false;
     }
 
+    @Override
+    public boolean movel() {
+        return true;
+    }
+
     public int getLayer() {
         return 2;
     }

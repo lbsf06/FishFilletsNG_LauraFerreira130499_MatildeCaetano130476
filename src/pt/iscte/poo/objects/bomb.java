@@ -10,6 +10,11 @@ public class Bomb extends StaticObject {
         return true;
     }
 
+    @Override
+    public boolean movel() {
+        return true;
+    }
+
     public int getLayer() {
         return 2;
     }
