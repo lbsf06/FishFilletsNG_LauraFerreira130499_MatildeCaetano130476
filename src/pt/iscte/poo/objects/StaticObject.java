@@ -17,6 +17,14 @@ public abstract class StaticObject extends GameObject {
         return false;
     }
 
+    /**
+     * Indica se o objeto pode ser arrastado pelo SmallFish.
+     * Por omissao os objetos sao pesados.
+     */
+    public boolean leve() {
+        return false;
+    }
+
     @Override
     public int getLayer() {
         return 1;
