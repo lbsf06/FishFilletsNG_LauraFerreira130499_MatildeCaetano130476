@@ -14,7 +14,11 @@ import java.awt.event.KeyEvent;
 public class GameEngine implements Observer {
 
     private Room room;
-    private ImageGUI gui;
+    private final ImageGUI gui;
+    private final HighscoreManager highscoreManager = HighscoreManager.getInstance();
+    private int lastTickProcessed;
+    private long gameStartTime;
+    private int totalMoves;
 
     // nível atual (room0, room1, etc.)
     private int currentLevel = 0;
@@ -28,24 +32,31 @@ public class GameEngine implements Observer {
 
     public GameEngine() {
         gui = ImageGUI.getInstance();
+        lastTickProcessed = gui.getTicks();
     }
 
     public void startGame() {
+        totalMoves = 0;
+        gameStartTime = System.currentTimeMillis();
         loadLevel(0);
         updateStatusMessage();
     }
 
     private void loadLevel(int level) {
+        gui.hideGameOverOverlay();
         this.currentLevel = level;
         gui.clearImages(); // limpa imagens antigas
         File f = new File("rooms/room" + level + ".txt");
         room = Room.readRoom(f);
+        if (room != null)
+            room.applyGravity();
         movesSmall = 0;
         movesBig = 0;
         smallSelected = true; // por default começa no small
         updateStatusMessage();
+        lastTickProcessed = gui.getTicks();
         gui.update();
-       
+
     }
 
     private void restartLevel() {
@@ -63,17 +74,24 @@ public class GameEngine implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        // distinguir entre TICK e TECLA
+        int currentTick = gui.getTicks();
+        boolean tickOccurred = currentTick != lastTickProcessed;
+
         if (gui.wasKeyPressed()) {
             handleKey();
-        } else {
+        } else if (tickOccurred) {
             handleTick();
+            lastTickProcessed = currentTick;
         }
+
         gui.update();
     }
 
     private void handleKey() {
         int key = gui.keyPressed();
+
+        if (room != null && room.isGameOver() && key != KeyEvent.VK_R)
+            return;
 
         // Trocar peixe com espaço
         if (key == KeyEvent.VK_SPACE) {
@@ -107,18 +125,53 @@ public class GameEngine implements Observer {
             }
         }
 
-        if (moved)
+        if (moved) {
+            totalMoves++;
             updateStatusMessage();
+            room.applyGravity();
+        }
 
-         if (room.checkLevelExit(room.getSmallFish()) && room.checkLevelExit(room.getBigFish())) {
-            loadLevel(currentLevel + 1);
+        if (room != null &&
+                room.getSmallFish() != null &&
+                room.getBigFish() != null &&
+                room.checkLevelExit(room.getSmallFish()) &&
+                room.checkLevelExit(room.getBigFish())) {
+            advanceOrFinish();
         }
 
     }
 
 
     private void handleTick() {
-        // Aqui no futuro entra a GRAVIDADE e outros comportamentos automáticos.
-        // Por agora não faz nada (para o jogo básico andar com os peixes).
+        if (room == null || room.isGameOver())
+            return;
+        room.applyGravity();
+    }
+
+    private void advanceOrFinish() {
+        int nextLevel = currentLevel + 1;
+        if (levelExists(nextLevel)) {
+            loadLevel(nextLevel);
+        } else {
+            finishGame();
+        }
+    }
+
+    private boolean levelExists(int level) {
+        File f = new File("rooms/room" + level + ".txt");
+        return f.exists();
+    }
+
+    private void finishGame() {
+        long totalTime = System.currentTimeMillis() - gameStartTime;
+        String name = gui.showInputDialog("Fim do Jogo", "Introduza o nome do jogador:");
+        if (name == null || name.isBlank())
+            name = "Jogador";
+        highscoreManager.recordScore(name.trim(), totalTime, totalMoves);
+        String table = highscoreManager.formatHighscores();
+        gui.showMessage("Top 10 Highscores", table);
+        totalMoves = 0;
+        gameStartTime = System.currentTimeMillis();
+        loadLevel(0);
     }
 }

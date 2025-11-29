@@ -3,6 +3,7 @@ package pt.iscte.poo.game;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -32,6 +33,7 @@ public class Room {
 	private String roomName;
 	private int width;
 	private int height;
+	private boolean gameOver;
 
 	private SmallFish sf;
 	private BigFish bf;
@@ -64,6 +66,10 @@ public class Room {
 
 	public BigFish getBigFish() {
 		return bf;
+	}
+
+	public boolean isGameOver() {
+		return gameOver;
 	}
 
 	public void setSmallFish(SmallFish sf) {
@@ -173,9 +179,9 @@ public class Room {
 		if (lightObject == null)
 			return false;
 
-        Point2D pushTarget = target.plus(dir.asVector());
-        if (!canObjectOccupy(lightObject, pushTarget))
-            return false;
+		Point2D pushTarget = target.plus(dir.asVector());
+		if (!canObjectOccupy(lightObject, pushTarget))
+			return false;
 
 		lightObject.setPosition(pushTarget);
 		fish.move(dir);
@@ -193,24 +199,24 @@ public class Room {
 		Vector2D delta = dir.asVector();
 		Point2D check = fish.getPosition().plus(delta);
 
-        while (true) {
-            if (!isInside(check))
-                return false;
+		while (true) {
+			if (!isInside(check))
+				return false;
 
-            StaticObject mover = chain.isEmpty() ? null : chain.get(chain.size() - 1);
-            if (mover != null && canObjectOccupy(mover, check))
-                break;
+			StaticObject mover = chain.isEmpty() ? null : chain.get(chain.size() - 1);
+			if (mover != null && canObjectOccupy(mover, check))
+				break;
 
-            StaticObject movable = getSingleMovableObject(check);
-            if (movable == null || !movable.podeSerEmpurrado(dir))
-                return false;
+			StaticObject movable = getSingleMovableObject(check);
+			if (movable == null || !movable.podeSerEmpurrado(dir))
+				return false;
 
-            chain.add(movable);
-            if (chain.size() > maxObjects)
-                return false;
+			chain.add(movable);
+			if (chain.size() > maxObjects)
+				return false;
 
-            check = check.plus(delta);
-        }
+			check = check.plus(delta);
+		}
 
 		if (chain.isEmpty())
 			return false;
@@ -242,10 +248,15 @@ public class Room {
 			if (obj instanceof GameCharacter)
 				return false;
 
-            if (obj instanceof StaticObject staticObj) {
-                if (!staticObj.permitePassagem(character))
-                    return false;
-            }
+			if (obj instanceof Trap && character instanceof BigFish) {
+				killFish(character);
+				return false;
+			}
+
+			if (obj instanceof StaticObject staticObj) {
+				if (!staticObj.permitePassagem(character))
+					return false;
+			}
 		}
 
 		return true;
@@ -279,57 +290,213 @@ public class Room {
 		return null;
 	}
 
-    private StaticObject getSingleMovableObject(Point2D position) {
-        StaticObject movable = null;
-        List<StaticObject> blockers = new ArrayList<>();
-        for (GameObject obj : objectsAt(position)) {
-            if (obj instanceof Water)
-                continue;
-            if (!(obj instanceof StaticObject staticObj))
-                return null;
-            if (staticObj.movel()) {
-                if (movable != null)
-                    return null;
-                movable = staticObj;
-            } else {
-                blockers.add(staticObj);
-            }
-        }
+	private StaticObject getSingleMovableObject(Point2D position) {
+		StaticObject movable = null;
+		List<StaticObject> blockers = new ArrayList<>();
+		for (GameObject obj : objectsAt(position)) {
+			if (obj instanceof Water)
+				continue;
+			if (!(obj instanceof StaticObject staticObj))
+				return null;
+			if (staticObj.movel()) {
+				if (movable != null)
+					return null;
+				movable = staticObj;
+			} else {
+				blockers.add(staticObj);
+			}
+		}
 
-        if (movable == null)
-            return null;
+		if (movable == null)
+			return null;
 
-        for (StaticObject blocker : blockers) {
-            if (!blocker.permitePassagem(movable))
-                return null;
-        }
+		for (StaticObject blocker : blockers) {
+			if (!blocker.permitePassagem(movable))
+				return null;
+		}
 
-        return movable;
-    }
+		return movable;
+	}
 
-    private boolean isTileFree(Point2D position) {
-        for (GameObject obj : objectsAt(position)) {
-            if (obj instanceof Water)
-                continue;
-            return false;
-        }
-        return true;
-    }
+	private boolean isTileFree(Point2D position) {
+		for (GameObject obj : objectsAt(position)) {
+			if (obj instanceof Water)
+				continue;
+			return false;
+		}
+		return true;
+	}
 
-    private boolean canObjectOccupy(GameObject mover, Point2D position) {
-        if (!isInside(position))
-            return false;
-        for (GameObject obj : objectsAt(position)) {
-            if (obj instanceof Water || obj == mover)
-                continue;
-            if (obj instanceof StaticObject staticObj) {
-                if (!staticObj.permitePassagem(mover))
-                    return false;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
+	private boolean canObjectOccupy(GameObject mover, Point2D position) {
+		if (!isInside(position))
+			return false;
+		for (GameObject obj : objectsAt(position)) {
+			if (obj instanceof Water || obj == mover)
+				continue;
+			if (obj instanceof StaticObject staticObj) {
+				if (!staticObj.permitePassagem(mover))
+					return false;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void applyGravity() {
+		List<StaticObject> movable = new ArrayList<>();
+		for (GameObject obj : objects) {
+			if (obj instanceof StaticObject staticObj && staticObj.movel()) {
+				movable.add(staticObj);
+			}
+		}
+
+		movable.sort(Comparator.comparingInt((StaticObject o) -> o.getPosition().getY()).reversed());
+
+		for (StaticObject obj : movable) {
+			if (!hasSupport(obj)) {
+				if (obj instanceof Bomb bomb)
+					bomb.setFalling(true);
+
+				Point2D target = obj.getPosition().plus(Direction.DOWN.asVector());
+				if (canObjectOccupy(obj, target)) {
+					obj.setPosition(target);
+				} else if (breakTroncoIfHeavy(obj, target) && canObjectOccupy(obj, target)) {
+					obj.setPosition(target);
+				} else if (obj instanceof Bomb bomb) {
+					if (bomb.wasFalling() && triggerBombCollision(bomb, target))
+						continue;
+				}
+			} else if (obj instanceof Bomb bomb) {
+				if (bomb.wasFalling() && handleBombSupport(bomb))
+					continue;
+				bomb.setFalling(false);
+			}
+		}
+	}
+
+	private boolean hasSupport(StaticObject obj) {
+		Point2D below = obj.getPosition().plus(Direction.DOWN.asVector());
+		if (!isInside(below))
+			return true;
+
+		for (GameObject other : objectsAt(below)) {
+			if (other instanceof Water)
+				continue;
+			if (other instanceof GameCharacter)
+				return true;
+			if (other instanceof StaticObject staticObj && staticObj.aguentaPeso())
+				return true;
+		}
+
+		return false;
+	}
+
+	private boolean triggerBombCollision(Bomb bomb, Point2D target) {
+		boolean hitSolid = false;
+		for (GameObject other : objectsAt(target)) {
+			if (other instanceof Water)
+				continue;
+			if (other instanceof GameCharacter)
+				continue;
+			hitSolid = true;
+			break;
+		}
+		if (!hitSolid)
+			return false;
+
+		explodeBomb(bomb);
+		return true;
+	}
+
+	private boolean handleBombSupport(Bomb bomb) {
+		Point2D below = bomb.getPosition().plus(Direction.DOWN.asVector());
+		if (!isInside(below))
+			return false;
+
+		List<GameObject> belowObjects = objectsAt(below);
+		boolean hasSolid = false;
+		for (GameObject obj : belowObjects) {
+			if (obj instanceof Water)
+				continue;
+			if (obj instanceof GameCharacter)
+				return false;
+			hasSolid = true;
+		}
+
+		if (hasSolid) {
+			explodeBomb(bomb);
+			return true;
+		}
+
+		return false;
+	}
+
+	private void explodeBomb(Bomb bomb) {
+		List<GameObject> toRemove = new ArrayList<>();
+		collectBlastTargets(bomb.getPosition(), toRemove);
+		for (Direction dir : new Direction[] { Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT }) {
+			Point2D pos = bomb.getPosition().plus(dir.asVector());
+			if (isInside(pos))
+				collectBlastTargets(pos, toRemove);
+		}
+
+		for (GameObject obj : toRemove) {
+			destroyObject(obj);
+		}
+	}
+
+	private void collectBlastTargets(Point2D position, List<GameObject> collector) {
+		for (GameObject obj : objectsAt(position)) {
+			if (obj instanceof Water)
+				continue;
+			if (!collector.contains(obj))
+				collector.add(obj);
+		}
+	}
+
+	private void destroyObject(GameObject obj) {
+		if (obj == null)
+			return;
+
+		removeObject(obj);
+		if (obj == sf) {
+			sf = null;
+			notifyGameOver();
+		} else if (obj == bf) {
+			bf = null;
+			notifyGameOver();
+		}
+	}
+
+	private void killFish(GameCharacter fish) {
+		destroyObject(fish);
+	}
+
+	private void notifyGameOver() {
+		if (!gameOver) {
+			gameOver = true;
+			ImageGUI.getInstance().showGameOverOverlay("Game Over! Press R to try again.");
+		}
+	}
+
+	private boolean breakTroncoIfHeavy(StaticObject mover, Point2D target) {
+		if (mover == null || mover.leve())
+			return false;
+
+		List<GameObject> targetObjects = new ArrayList<>(objectsAt(target));
+		boolean removed = false;
+		for (GameObject obj : targetObjects) {
+			if (obj instanceof Water)
+				continue;
+			if (obj instanceof Tronco) {
+				removeObject(obj);
+				removed = true;
+			} else {
+				return false;
+			}
+		}
+		return removed;
+	}
 
 }

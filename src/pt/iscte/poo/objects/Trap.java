@@ -10,8 +10,12 @@ public class Trap extends StaticObject {
         return false;
     }
 
+    public boolean movel() {
+        return false;
+    }
+
     public int getLayer() {
-        return 2;
+        return 1;
     }
 
     @Override

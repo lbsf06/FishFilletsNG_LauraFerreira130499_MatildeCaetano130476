@@ -20,7 +20,9 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -78,6 +80,7 @@ public class ImageGUI extends Observable {
     private int height = 480;
 
     private JFrame frame;
+    private JDialog gameOverDialog;
     private JPanel panel;
     private JLabel info;
 
@@ -343,6 +346,32 @@ public class ImageGUI extends Observable {
 
     public void showMessage(String title, String message) {
         JOptionPane.showMessageDialog(panel, message, title, JOptionPane.DEFAULT_OPTION);
+    }
+
+    public void showGameOverOverlay(String message) {
+        if (gameOverDialog == null) {
+            gameOverDialog = new JDialog(frame, "Game Over", false);
+            gameOverDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+            gameOverDialog.setFocusableWindowState(false);
+            gameOverDialog.setAlwaysOnTop(true);
+        }
+
+        gameOverDialog.getContentPane().removeAll();
+        JLabel label = new JLabel("<html><center>" + message + "</center></html>", SwingConstants.CENTER);
+        label.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        gameOverDialog.add(label, BorderLayout.CENTER);
+        gameOverDialog.pack();
+        gameOverDialog.setLocationRelativeTo(frame);
+        gameOverDialog.setVisible(true);
+        gameOverDialog.toFront();
+    }
+
+    public void hideGameOverOverlay() {
+        if (gameOverDialog != null) {
+            gameOverDialog.setVisible(false);
+            gameOverDialog.dispose();
+            gameOverDialog = null;
+        }
     }
 
     public String showInputDialog(String title, String message) {
