@@ -22,14 +22,14 @@ import pt.iscte.poo.objects.Bomb;
 import pt.iscte.poo.objects.Cup;
 import pt.iscte.poo.objects.Stone;
 import pt.iscte.poo.objects.Trap;
-import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.utils.Direction;
 import pt.iscte.poo.utils.Point2D;
 import pt.iscte.poo.utils.Vector2D;
 
 public class Room {
 
-	private List<GameObject> objects;
+	private final List<GameObject> objects;
+	private final RoomView view;
 	private String roomName;
 	private int width;
 	private int height;
@@ -38,8 +38,9 @@ public class Room {
 	private SmallFish sf;
 	private BigFish bf;
 
-	public Room() {
-		objects = new ArrayList<GameObject>();
+	public Room(RoomView view) {
+		this.view = view;
+		this.objects = new ArrayList<>();
 	}
 
 	private void setName(String name) {
@@ -51,13 +52,28 @@ public class Room {
 	}
 
 	public void addObject(GameObject obj) {
+		if (obj == null)
+			return;
+
 		objects.add(obj);
-		ImageGUI.getInstance().addImage(obj);
+		if (obj instanceof SmallFish small)
+			sf = small;
+		else if (obj instanceof BigFish big)
+			bf = big;
+
+		if (view != null)
+			view.onObjectAdded(obj);
 	}
 
 	public void removeObject(GameObject obj) {
 		objects.remove(obj);
-		ImageGUI.getInstance().removeImage(obj);
+		if (obj == sf)
+			sf = null;
+		else if (obj == bf)
+			bf = null;
+
+		if (view != null)
+			view.onObjectRemoved(obj);
 	}
 
 	public SmallFish getSmallFish() {
@@ -72,17 +88,13 @@ public class Room {
 		return gameOver;
 	}
 
-	public void setSmallFish(SmallFish sf) {
-		this.sf = sf;
+		public static Room readRoom(File f, RoomView view) {
+		return readRoom(f, view, new DefaultRoomObjectFactory());
 	}
 
-	public void setBigFish(BigFish bf) {
-		this.bf = bf;
-	}
+	public static Room readRoom(File f, RoomView view, RoomObjectFactory factory) {
 
-	public static Room readRoom(File f) {
-
-		Room r = new Room();
+		Room r = new Room(view);
 		r.setName(f.getName());
 
 		List<String> linhas = new ArrayList<>();
@@ -92,11 +104,10 @@ public class Room {
 				linhas.add(sc.nextLine());
 			}
 		} catch (FileNotFoundException e) {
-			System.err.println("ERRO: ficheiro " + f.getName() + " nÃ£o encontrado!");
+			System.err.println("ERRO: ficheiro " + f.getName() + " nao encontrado!");
 			return r;
 		}
 
-		// 1Âº: preencher tudo com Ã¡gua
 		int altura = linhas.size();
 		int largura = linhas.stream().mapToInt(String::length).max().orElse(0);
 		r.height = altura;
@@ -109,7 +120,8 @@ public class Room {
 			}
 		}
 
-		// 2Âº: adicionar objetos do ficheiro por cima da Ã¡gua
+		RoomObjectFactory effectiveFactory = factory != null ? factory : new DefaultRoomObjectFactory();
+
 		for (int y = 0; y < altura; y++) {
 			String linha = linhas.get(y);
 
@@ -117,32 +129,7 @@ public class Room {
 				char c = x < linha.length() ? linha.charAt(x) : ' ';
 				Point2D p = new Point2D(x, y);
 
-				GameObject obj = null;
-
-				switch (c) {
-					case 'W' -> obj = new ParedeNormal(p);
-					case 'X' -> obj = new ParedeComBuraco(p);
-					case 'Y' -> obj = new Tronco(p);
-					case 'H' -> obj = new TuboDeAco(p, true);
-					case 'V' -> obj = new TuboDeAco(p, false);
-					case 'C' -> obj = new Cup(p);
-					case 'R' -> obj = new Stone(p);
-					case 'A' -> obj = new Anchor(p);
-					case 'b' -> obj = new Bomb(p);
-					case 'T' -> obj = new Trap(p);
-					case 'B' -> {
-						BigFish bf = new BigFish(p);
-						r.setBigFish(bf);
-						obj = bf;
-					}
-					case 'S' -> {
-						SmallFish sf = new SmallFish(p);
-						r.setSmallFish(sf);
-						obj = sf;
-					}
-					case ' ' -> obj = null;
-				}
-
+				GameObject obj = effectiveFactory.create(c, p);
 				if (obj != null)
 					r.addObject(obj);
 			}
@@ -150,7 +137,6 @@ public class Room {
 
 		return r;
 	}
-
 	public boolean tryMove(GameCharacter character, Direction dir) {
 		if (character == null || dir == null)
 			return false;
@@ -459,14 +445,11 @@ public class Room {
 		if (obj == null)
 			return;
 
+		boolean smallDied = obj == sf;
+		boolean bigDied = obj == bf;
 		removeObject(obj);
-		if (obj == sf) {
-			sf = null;
+		if (smallDied || bigDied)
 			notifyGameOver();
-		} else if (obj == bf) {
-			bf = null;
-			notifyGameOver();
-		}
 	}
 
 	private void killFish(GameCharacter fish) {
@@ -476,7 +459,8 @@ public class Room {
 	private void notifyGameOver() {
 		if (!gameOver) {
 			gameOver = true;
-			ImageGUI.getInstance().showGameOverOverlay("Game Over! Press R to try again.");
+			if (view != null)
+				view.showGameOver("Game Over! Press R to try again.");
 		}
 	}
 
@@ -500,3 +484,4 @@ public class Room {
 	}
 
 }
+

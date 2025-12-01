@@ -5,8 +5,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import pt.iscte.poo.gui.ImageGUI;
-import pt.iscte.poo.objects.Cup;
-import pt.iscte.poo.objects.GameObject;
 import pt.iscte.poo.utils.Direction;
 
 import java.awt.event.KeyEvent;
@@ -15,6 +13,7 @@ public class GameEngine implements Observer {
 
     private Room room;
     private final ImageGUI gui;
+    private final RoomView roomView;
     private final HighscoreManager highscoreManager = HighscoreManager.getInstance();
     private int lastTickProcessed;
     private long gameStartTime;
@@ -32,6 +31,7 @@ public class GameEngine implements Observer {
 
     public GameEngine() {
         gui = ImageGUI.getInstance();
+        roomView = new GuiRoomView(gui);
         lastTickProcessed = gui.getTicks();
     }
 
@@ -47,7 +47,7 @@ public class GameEngine implements Observer {
         this.currentLevel = level;
         gui.clearImages(); // limpa imagens antigas
         File f = new File("rooms/room" + level + ".txt");
-        room = Room.readRoom(f);
+        room = Room.readRoom(f, roomView);
         if (room != null)
             room.applyGravity();
         movesSmall = 0;
