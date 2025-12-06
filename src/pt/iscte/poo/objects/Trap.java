@@ -1,8 +1,9 @@
 package pt.iscte.poo.objects;
+import pt.iscte.poo.utils.Point2D;
 
 public class Trap extends StaticObject {
 
-    public Trap(pt.iscte.poo.utils.Point2D p) {
+    public Trap(Point2D p) {
         super(p, "trap");
     }
 

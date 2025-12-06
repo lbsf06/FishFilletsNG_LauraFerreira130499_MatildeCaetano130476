@@ -1,8 +1,9 @@
 package pt.iscte.poo.objects;
+import pt.iscte.poo.utils.Point2D;
 
 public class ParedeNormal extends Parede {
 
-    public ParedeNormal(pt.iscte.poo.utils.Point2D p) {
+    public ParedeNormal(Point2D p) {
         super(p, "W");
     }
 

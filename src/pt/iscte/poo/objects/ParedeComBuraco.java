@@ -1,8 +1,9 @@
 package pt.iscte.poo.objects;
+import pt.iscte.poo.utils.Point2D;
 
 public class ParedeComBuraco extends Parede {
 
-    public ParedeComBuraco(pt.iscte.poo.utils.Point2D p) {
+    public ParedeComBuraco(Point2D p) {
         super(p, "holedWall");
     }
 

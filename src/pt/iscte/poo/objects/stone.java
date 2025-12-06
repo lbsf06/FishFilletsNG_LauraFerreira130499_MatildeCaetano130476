@@ -1,8 +1,9 @@
 package pt.iscte.poo.objects;
+import pt.iscte.poo.utils.Point2D;
 
 public class Stone extends StaticObject {
 
-    public Stone(pt.iscte.poo.utils.Point2D p) {
+    public Stone(Point2D p) {
         super(p, "stone");
     }
 
