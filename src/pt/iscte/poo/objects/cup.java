@@ -1,29 +1,24 @@
 package pt.iscte.poo.objects;
+
 import pt.iscte.poo.utils.Point2D;
 
-public class Cup extends StaticObject {
+public class Cup extends MovelObject { // classe Cup que herda de MovelObject
 
-    public Cup(Point2D p) {
+    public Cup(Point2D p) { // construtor que chama o construtor da superclasse MovelObject
         super(p, "cup");
     }
 
-    
     public boolean leve() {
         return true;
     }
 
     @Override
-    public boolean movel() {
-        return true;
-    }
-
-    @Override
-    public TipoObjeto getTipo() {
+    public TipoObjeto getTipo() { // metodo herdado de MovelObject usa o enum TipoObjeto
         return TipoObjeto.CUP;
     }
 
-
-    public int getLayer() {
-        return 2;
+    @Override
+    public int getLayer() { // metodo herdado de MovelObject
+        return 3;
     }
 }

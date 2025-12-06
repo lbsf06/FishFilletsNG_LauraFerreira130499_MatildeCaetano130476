@@ -1,10 +1,11 @@
 package pt.iscte.poo.objects;
+
 import pt.iscte.poo.utils.Point2D;
 
-public class Trap extends StaticObject {
+public class Trap extends StaticObject { // classe Trap que herda de StaticObject
 
     public Trap(Point2D p) {
-        super(p, "trap");
+        super(p, "trap"); // chama o construtor da superclasse StaticObject
     }
 
     public boolean leve() {
@@ -17,15 +18,11 @@ public class Trap extends StaticObject {
 
     @Override
     public TipoObjeto getTipo() {
-        return TipoObjeto.TRAP;
-    }
-
-    public int getLayer() {
-        return 1;
+        return TipoObjeto.TRAP; // usa o enum TipoObjeto
     }
 
     @Override
-    public boolean podeAtravessar(GameCharacter character) {
-        return character.getTipo() == TipoObjeto.SMALL_FISH;
+    public boolean podeAtravessar(GameCharacter character) { // metodo herdado de staticObject
+        return character.getTipo() == TipoObjeto.SMALL_FISH; // apenas SMALL_FISH pode atravessar
     }
 }

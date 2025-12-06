@@ -1,7 +1,8 @@
 package pt.iscte.poo.objects;
+
 import pt.iscte.poo.utils.Point2D;
 
-public class ParedeNormal extends Parede {
+public class ParedeNormal extends Parede { // classe ParedeNormal que herda de Parede
 
     public ParedeNormal(Point2D p) {
         super(p, "W");

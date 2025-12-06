@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 import pt.iscte.poo.objects.Water;
 import pt.iscte.poo.objects.BigFish;
@@ -35,6 +37,7 @@ public class Room {
 	private final List<GameObject> objects;
 	private final RoomView view;
 	private final Random random = new Random();
+	private final Set<Krab> freshKrabs = new HashSet<>();
 	private String roomName;
 	private int width;
 	private int height;
@@ -65,6 +68,8 @@ public class Room {
 			sf = (SmallFish) obj;
 		else if (obj.getTipo() == TipoObjeto.BIG_FISH)
 			bf = (BigFish) obj;
+		else if (obj.getTipo() == TipoObjeto.KRAB)
+			freshKrabs.add((Krab) obj);
 
 		if (view != null)
 			view.onObjectAdded(obj);
@@ -76,6 +81,8 @@ public class Room {
 			sf = null;
 		else if (obj == bf)
 			bf = null;
+		if (obj != null && obj.getTipo() == TipoObjeto.KRAB)
+			freshKrabs.remove(obj);
 
 		if (view != null)
 			view.onObjectRemoved(obj);
@@ -534,9 +541,12 @@ public class Room {
 		for (Krab krab : getKrabs()) {
 			if (!objects.contains(krab))
 				continue;
+			if (freshKrabs.contains(krab))
+				continue;
 			Direction dir = random.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			moveKrabTo(krab, krab.getPosition().plus(dir.asVector()));
 		}
+		freshKrabs.clear();
 	}
 
 	private boolean moveKrabTo(Krab krab, Point2D target) {

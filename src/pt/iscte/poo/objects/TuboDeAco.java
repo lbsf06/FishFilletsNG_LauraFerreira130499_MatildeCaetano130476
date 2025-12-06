@@ -7,7 +7,7 @@ public class TuboDeAco extends StaticObject {
     private final boolean horizontal;
 
     public TuboDeAco(Point2D p, boolean horizontal) {
-        super(p, horizontal ? "steelHorizontal" : "steelVertical");
+        super(p, horizontal ? "steelHorizontal" : "steelVertical"); // chama o construtor da superclasse StaticObject
         this.horizontal = horizontal;
     }
 
@@ -16,12 +16,12 @@ public class TuboDeAco extends StaticObject {
     }
 
     @Override
-    public boolean aguentaPeso() {
+    public boolean aguentaPeso() { // metoto herdado de StaticObject
         return true;
     }
 
     @Override
-    public TipoObjeto getTipo() {
+    public TipoObjeto getTipo() { // metoto herdado de StaticObject, usa o enum TipoObjeto
         return TipoObjeto.TUBO_DE_ACO;
     }
 }
