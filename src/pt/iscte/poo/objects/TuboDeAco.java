@@ -19,4 +19,9 @@ public class TuboDeAco extends StaticObject {
     public boolean aguentaPeso() {
         return true;
     }
+
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.TUBO_DE_ACO;
+    }
 }

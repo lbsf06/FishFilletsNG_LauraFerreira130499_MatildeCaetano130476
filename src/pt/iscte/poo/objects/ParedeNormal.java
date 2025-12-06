@@ -7,4 +7,9 @@ public class ParedeNormal extends Parede {
         super(p, "W");
     }
 
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.PAREDE_NORMAL;
+    }
+
 }

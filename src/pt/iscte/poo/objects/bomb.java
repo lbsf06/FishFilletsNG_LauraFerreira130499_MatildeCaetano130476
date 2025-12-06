@@ -26,6 +26,11 @@ public class Bomb extends StaticObject {
         return falling;
     }
 
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.BOMB;
+    }
+
     public int getLayer() {
         return 2;
     }

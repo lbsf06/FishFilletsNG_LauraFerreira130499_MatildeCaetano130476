@@ -7,16 +7,21 @@ public class ParedeComBuraco extends Parede {
         super(p, "holedWall");
     }
 
-    @Override
-    public boolean podeAtravessar(GameCharacter character) {
-        return character instanceof SmallFish;
-    }
+	@Override
+	public boolean podeAtravessar(GameCharacter character) {
+		TipoObjeto tipo = character.getTipo();
+		return tipo == TipoObjeto.SMALL_FISH || tipo == TipoObjeto.KRAB;
+	}
 
     @Override
     public boolean permitePassagem(GameObject mover) {
-        if (mover instanceof Cup)
+        if (mover != null && mover.getTipo() == TipoObjeto.CUP)
             return true;
         return super.permitePassagem(mover);
     }
 
+	@Override
+	public TipoObjeto getTipo() {
+		return TipoObjeto.PAREDE_COM_BURACO;
+	}
 }

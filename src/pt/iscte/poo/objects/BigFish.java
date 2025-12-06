@@ -20,4 +20,9 @@ public class BigFish extends GameCharacter {
             imageName = "bigFishLeft";
     }
 
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.BIG_FISH;
+    }
+
 }

@@ -11,21 +11,21 @@ import java.util.Random;
  *          Cardinal directions
  *
  */
-public enum Direction implements Serializable{
+public enum Direction implements Serializable {
 
-	LEFT(new Vector2D(-1, 0)), UP(new Vector2D(0, -1)), RIGHT(new Vector2D(1, 0)), DOWN(new Vector2D(0, 1));
+    LEFT(new Vector2D(-1, 0)), UP(new Vector2D(0, -1)), RIGHT(new Vector2D(1, 0)), DOWN(new Vector2D(0, 1));
 
-	private final Vector2D vector;
+    private final Vector2D vector;
 
-	Direction(Vector2D vector) {
-		this.vector = vector;
-	}
+    Direction(Vector2D vector) {
+        this.vector = vector;
+    }
 
-	public Vector2D asVector() {
-		return vector;
-	}
+    public Vector2D asVector() {
+        return vector;
+    }
 
-	public static Direction directionFor(int keyCode) {
+    public static Direction directionFor(int keyCode) {
         return switch (keyCode) {
             case KeyEvent.VK_DOWN, KeyEvent.VK_S -> DOWN;
             case KeyEvent.VK_UP, KeyEvent.VK_W -> UP;
@@ -50,24 +50,24 @@ public enum Direction implements Serializable{
                 keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_D;
     }
 
-	public Direction opposite() {
+    public Direction opposite() {
         return switch (this) {
             case UP -> DOWN;
             case DOWN -> UP;
             case LEFT -> RIGHT;
             default -> LEFT;
         };
-	}
+    }
 
-	public static Direction random() {
-		Random generator = new Random();
-		return values()[generator.nextInt(values().length)];
-	}
+    public static Direction random() {
+        Random generator = new Random();
+        return values()[generator.nextInt(values().length)];
+    }
 
-	public static Direction forVector(Vector2D v) {
-		for (Direction d : values())
-			if (v.equals(d.asVector()))
-				return d;
-		throw new IllegalArgumentException();
-	}
+    public static Direction forVector(Vector2D v) {
+        for (Direction d : values())
+            if (v.equals(d.asVector()))
+                return d;
+        throw new IllegalArgumentException();
+    }
 }

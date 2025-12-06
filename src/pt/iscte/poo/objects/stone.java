@@ -16,6 +16,21 @@ public class Stone extends StaticObject {
         return true;
     }
 
+    private boolean krabSpawned = false;
+
+    public boolean canSpawnKrab() {
+        return !krabSpawned;
+    }
+
+    public void markKrabSpawned() {
+        this.krabSpawned = true;
+    }
+
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.STONE;
+    }
+
     public int getLayer() {
         return 2;
     }

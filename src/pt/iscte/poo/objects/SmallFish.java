@@ -19,4 +19,9 @@ public class SmallFish extends GameCharacter {
         else if (d == Direction.LEFT)
             imageName = "smallFishLeft";
     }
+
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.SMALL_FISH;
+    }
 }

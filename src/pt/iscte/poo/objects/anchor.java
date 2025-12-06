@@ -30,6 +30,11 @@ public class Anchor extends StaticObject {
         jaEmpurrada = true;
     }
 
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.ANCHOR;
+    }
+
     public int getLayer() {
         return 2;
     }

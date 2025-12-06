@@ -15,12 +15,17 @@ public class Trap extends StaticObject {
         return false;
     }
 
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.TRAP;
+    }
+
     public int getLayer() {
         return 1;
     }
 
     @Override
     public boolean podeAtravessar(GameCharacter character) {
-        return character instanceof SmallFish;
+        return character.getTipo() == TipoObjeto.SMALL_FISH;
     }
 }

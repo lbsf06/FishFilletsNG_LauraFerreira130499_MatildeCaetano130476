@@ -12,4 +12,9 @@ public class Tronco extends StaticObject {
         return false;
     }
 
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.TRONCO;
+    }
+
 }

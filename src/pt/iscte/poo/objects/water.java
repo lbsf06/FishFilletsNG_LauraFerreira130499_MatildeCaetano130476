@@ -9,6 +9,11 @@ public class Water extends GameObject {
     }
 
     @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.WATER;
+    }
+
+    @Override
     public int getLayer() {
         return 0;
     }

@@ -17,6 +17,11 @@ public class Cup extends StaticObject {
         return true;
     }
 
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.CUP;
+    }
+
 
     public int getLayer() {
         return 2;

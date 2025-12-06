@@ -13,10 +13,6 @@ public abstract class GameObject implements ImageTile {
 
     }
 
-    public void setPosition(int x, int y) {
-        this.position = new Point2D(x, y);
-    }
-
     public void setPosition(Point2D p) {
         this.position = p;
     }
@@ -30,7 +26,9 @@ public abstract class GameObject implements ImageTile {
     public Point2D getPosition() {
         return position;
     }
-    
+
+    public abstract TipoObjeto getTipo();
+
     @Override
     public int getLayer() {
         return 1;

@@ -7,7 +7,7 @@ public abstract class StaticObject extends GameObject {
 
     public StaticObject(Point2D p, String img) {
         super(p);
-        this.imageName = img; // ensure GUI knows which sprite to render
+        this.imageName = img;
     }
 
     public boolean aguentaPeso() {
@@ -18,18 +18,10 @@ public abstract class StaticObject extends GameObject {
         return false;
     }
 
-    /**
-     * Indica se o objeto pode ser arrastado pelo SmallFish.
-     * Por omissao os objetos sao pesados.
-     */
     public boolean leve() {
         return false;
     }
 
-    /**
-     * Indica se o objeto pode ser deslocado pelos peixes.
-     * Por defeito o objeto e estatico.
-     */
     public boolean movel() {
         return false;
     }
@@ -39,13 +31,21 @@ public abstract class StaticObject extends GameObject {
     }
 
     public void notificarEmpurrado() {
-        // por omissao nada a fazer
+
     }
 
     public boolean permitePassagem(GameObject mover) {
-        if (mover instanceof GameCharacter character)
-            return podeAtravessar(character);
+        if (mover != null) {
+            TipoObjeto tipo = mover.getTipo();
+            if (tipo == TipoObjeto.SMALL_FISH || tipo == TipoObjeto.BIG_FISH || tipo == TipoObjeto.KRAB)
+                return podeAtravessar((GameCharacter) mover);
+        }
         return false;
+    }
+
+    @Override
+    public TipoObjeto getTipo() {
+        return TipoObjeto.OTHER_STATIC;
     }
 
     @Override
