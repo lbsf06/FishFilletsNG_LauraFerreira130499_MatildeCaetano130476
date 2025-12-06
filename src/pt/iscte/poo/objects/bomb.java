@@ -1,10 +1,11 @@
 package pt.iscte.poo.objects;
+import pt.iscte.poo.utils.Point2D;
 
 public class Bomb extends StaticObject {
 
     private boolean falling;
 
-    public Bomb(pt.iscte.poo.utils.Point2D p) {
+    public Bomb(Point2D p) {
         super(p, "bomb");
     }
 

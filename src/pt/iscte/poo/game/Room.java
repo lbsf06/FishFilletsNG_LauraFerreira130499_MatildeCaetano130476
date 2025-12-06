@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import pt.iscte.poo.objects.Water;
 import pt.iscte.poo.objects.BigFish;
+import pt.iscte.poo.objects.Buoy;
 import pt.iscte.poo.objects.GameCharacter;
 import pt.iscte.poo.objects.GameObject;
 import pt.iscte.poo.objects.ParedeComBuraco;
@@ -194,7 +195,7 @@ public class Room {
 				break;
 
 			StaticObject movable = getSingleMovableObject(check);
-			if (movable == null || !movable.podeSerEmpurrado(dir))
+			if (movable == null || (movable instanceof Buoy && dir == Direction.DOWN && !(fish instanceof BigFish)) || !movable.podeSerEmpurrado(dir))
 				return false;
 
 			chain.add(movable);
@@ -329,6 +330,8 @@ public class Room {
 		return true;
 	}
 
+	
+
 	public void applyGravity() {
 		List<StaticObject> movable = new ArrayList<>();
 		for (GameObject obj : objects) {
@@ -359,6 +362,29 @@ public class Room {
 				bomb.setFalling(false);
 			}
 		}
+
+		for (StaticObject obj : movable) {
+    if (obj instanceof Buoy buoy) {
+
+        // Verificar se está a suportar um objecto móvel → deve afundar
+        if (hasMovableOnTop(buoy)) {
+            applyNormalGravity(buoy);
+            continue;
+        }
+
+        // Tenta subir se não bloqueada
+        if (buoy.deveSubir()) {
+            Point2D above = buoy.getPosition().plus(Direction.UP.asVector());
+            if (canObjectOccupy(buoy, above)) {
+                buoy.setPosition(above);
+                continue;
+            }
+        }
+
+        // Caso não consiga subir → segue regra normal (afundar se não tiver suporte)
+        applyNormalGravity(buoy);
+			}
+		}
 	}
 
 	private boolean hasSupport(StaticObject obj) {
@@ -376,6 +402,26 @@ public class Room {
 		}
 
 		return false;
+	}
+
+	private boolean hasMovableOnTop(StaticObject obj) {
+    Point2D above = obj.getPosition().plus(Direction.UP.asVector());
+    if (!isInside(above)) return false;
+
+    for (GameObject g : objectsAt(above)) {
+        if (g instanceof StaticObject s && s.movel())
+            return true;
+    }
+    return false;
+	}
+
+	private void applyNormalGravity(StaticObject obj) {
+    	if (!hasSupport(obj)) {
+        	Point2D target = obj.getPosition().plus(Direction.DOWN.asVector());
+        	if (canObjectOccupy(obj, target)) {
+            	obj.setPosition(target);
+        	}
+    	}
 	}
 
 	private boolean triggerBombCollision(Bomb bomb, Point2D target) {

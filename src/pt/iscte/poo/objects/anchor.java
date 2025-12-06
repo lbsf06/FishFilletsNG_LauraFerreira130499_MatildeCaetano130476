@@ -1,12 +1,13 @@
 package pt.iscte.poo.objects;
 
 import pt.iscte.poo.utils.Direction;
+import pt.iscte.poo.utils.Point2D;
 
 public class Anchor extends StaticObject {
 
     private boolean jaEmpurrada = false;
 
-    public Anchor(pt.iscte.poo.utils.Point2D p) {
+    public Anchor(Point2D p) {
         super(p, "anchor");
     }
 

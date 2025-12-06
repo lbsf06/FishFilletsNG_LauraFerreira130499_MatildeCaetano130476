@@ -7,6 +7,7 @@ import java.util.function.Function;
 import pt.iscte.poo.objects.Anchor;
 import pt.iscte.poo.objects.BigFish;
 import pt.iscte.poo.objects.Bomb;
+import pt.iscte.poo.objects.Buoy;
 import pt.iscte.poo.objects.Cup;
 import pt.iscte.poo.objects.GameObject;
 import pt.iscte.poo.objects.ParedeComBuraco;
@@ -39,6 +40,7 @@ public class DefaultRoomObjectFactory implements RoomObjectFactory {
 		register('T', Trap::new);
 		register('B', BigFish::new);
 		register('S', SmallFish::new);
+		register('d', Buoy::new);
 	}
 
 	private void register(char symbol, Function<Point2D, GameObject> creator) {

@@ -1,8 +1,9 @@
 package pt.iscte.poo.objects;
+import pt.iscte.poo.utils.Point2D;
 
 public class Cup extends StaticObject {
 
-    public Cup(pt.iscte.poo.utils.Point2D p) {
+    public Cup(Point2D p) {
         super(p, "cup");
     }
 
