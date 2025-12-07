@@ -275,6 +275,7 @@ public class Room {
 			if (isCharacter(obj))
 				return false;
 
+
 			if (obj.getTipo() == TipoObjeto.TRAP && character.getTipo() == TipoObjeto.BIG_FISH) {
 				killFish(character);
 				return false;
