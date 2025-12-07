@@ -411,6 +411,8 @@ public class Room {
 					obj.setPosition(target);
 				} else if (breakTroncoIfHeavy(obj, target) && canObjectOccupy(obj, target)) {
 					obj.setPosition(target);
+				} else if (handleAnchorCrush(obj, target)) {
+					continue;
 				} else if (obj.getTipo() == TipoObjeto.BOMB) {
 					Bomb bomb = (Bomb) obj;
 					if (bomb.wasFalling() && triggerBombCollision(bomb, target))
@@ -705,6 +707,40 @@ public class Room {
 			if (view != null)
 				view.showGameOver("Game Over! Press R to try again.");
 		}
+	}
+
+	private boolean handleAnchorCrush(StaticObject obj, Point2D target) {
+		if (obj == null || obj.getTipo() != TipoObjeto.ANCHOR)
+			return false;
+		if (!isInside(target))
+			return false;
+
+		GameCharacter fishToKill = null;
+		for (GameObject occupant : objectsAt(target)) {
+			if (occupant == obj || occupant.getTipo() == TipoObjeto.WATER)
+				continue;
+
+			if (occupant.getTipo() == TipoObjeto.SMALL_FISH) {
+				fishToKill = (GameCharacter) occupant;
+				continue;
+			}
+
+			if (isStatic(occupant)) {
+				StaticObject staticOccupant = (StaticObject) occupant;
+				if (!staticOccupant.permitePassagem(obj))
+					return false;
+				continue;
+			}
+
+			return false;
+		}
+
+		if (fishToKill == null)
+			return false;
+
+		killFish(fishToKill);
+		obj.setPosition(target);
+		return true;
 	}
 
 	private boolean breakTroncoIfHeavy(StaticObject mover, Point2D target) {
