@@ -19,10 +19,7 @@ import pt.iscte.poo.objects.Tronco;
 import pt.iscte.poo.objects.TuboDeAco;
 import pt.iscte.poo.utils.Point2D;
 
-/**
- * Registers all known game symbols so the room parsing logic can stay open for
- * extension.
- */
+//regista todos os símbolos dos objetos do jogo
 public class DefaultRoomObjectFactory implements RoomObjectFactory {
 
 	private final Map<Character, Function<Point2D, GameObject>> creators = new HashMap<>();

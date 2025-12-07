@@ -403,7 +403,7 @@ public class Room {
 			if (obj.getTipo() == TipoObjeto.BUOY)
 				continue;
 			if (!hasSupport(obj)) {
-				if (obj.getTipo() == TipoObjeto.BOMB)
+					if (obj.getTipo() == TipoObjeto.BOMB)
 					((Bomb) obj).setFalling(true);
 
 				Point2D target = obj.getPosition().plus(Direction.DOWN.asVector());

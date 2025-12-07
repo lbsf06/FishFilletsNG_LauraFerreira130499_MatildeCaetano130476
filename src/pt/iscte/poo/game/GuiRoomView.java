@@ -3,9 +3,7 @@ package pt.iscte.poo.game;
 import pt.iscte.poo.gui.ImageGUI;
 import pt.iscte.poo.objects.GameObject;
 
-/**
- * Default {@link RoomView} backed by {@link ImageGUI}.
- */
+
 public class GuiRoomView implements RoomView {
 
 	private final ImageGUI gui;

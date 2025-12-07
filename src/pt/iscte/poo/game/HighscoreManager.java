@@ -66,7 +66,7 @@ public class HighscoreManager {
                     entries.add(entry);
             }
         } catch (FileNotFoundException e) {
-            // ignorar
+            
         }
         return entries;
     }
